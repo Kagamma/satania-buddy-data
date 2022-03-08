@@ -1,0 +1,18 @@
+if os != 'linux' {
+  talk('This command is not available on your OS at the moment.')
+  scheme_load(scheme_default)
+}
+
+s = process_run('sensors')
+while process_is_running(s) yield
+m = process_result_get(s)
+i = 0
+r = ''
+s = string_grep(m, 'Core 0')
+while s != '' {
+  i = i + 1
+  r = r + s + '\n'
+  s = string_grep(m, 'Core ' + string(i))
+}
+talk(r)
+

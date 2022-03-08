@@ -1,0 +1,8 @@
+while true {
+  sprite_load('idle/skeleton.x3dv')
+  sprite_scale_set(0.1)
+  anim = 'idle_' + string(random(3) + 1)
+  sprite_animation_play(anim, true)
+  sprite_animation_play('blink_loop', true)
+  wait(60)
+}

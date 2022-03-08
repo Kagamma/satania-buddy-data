@@ -1,0 +1,46 @@
+if is_silent
+  scheme_load('main-silent.evil')
+
+sprite_load('idle/skeleton.x3dv')
+sprite_scale_set(0.1)
+anim = 'idle_' + string(random(3) + 1)
+sprite_animation_play(anim, true)
+sprite_animation_play('blink_loop', true)
+while true {
+  t = random(25) + 5
+  while t > 0 {
+    yield
+    t = t - delta_time
+  }
+  if is_speech_to_text
+    continue
+  emailDelay = flag_get('emailDelay')
+  if emailDelay = '' {
+    flag_set('emailDelay', '0')
+    if email_is_configured = 0 {
+      talk('I can check new emails for you, just configure your mailbox in <font color="#0000ff">Settings</font>.')
+      wait(5)
+    }
+  }
+  emailDelay = number(flag_get('emailDelay'))
+  // Check for emails every 5 minutes
+  if email_is_configured & (ticks - emailDelay >= 300000) {
+    flag_set('emailDelay', string(ticks))
+    scheme_load('menu/Email.evil')
+  }
+  r = random(32)
+  if r < 10 {
+    scheme_load('itoddlers-btfo.evil')
+  } else if (r < 20) & is_lewd {
+    scheme_load('jump.evil')
+  } else if (r < 30) & is_lewd {
+    scheme_load('lift.evil')
+  } else {
+    process_run('fortune')
+    while process_is_running('fortune')
+      yield
+    m = process_result_get('fortune')
+    if m != ''
+      talk(m)
+  }
+}

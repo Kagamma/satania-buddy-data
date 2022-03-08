@@ -1,0 +1,144 @@
+{
+  "$$ClassName" : "TCastleUserInterface",
+  "FullSize" : true,
+  "Name" : "Group1",
+  "$NonVisualComponents" : [
+    {
+      "$$ClassName" : "TCastleFont",
+      "Name" : "FontSystem",
+      "OptimalSize" : 16
+    }
+  ],
+  "$Children" : [
+    {
+      "$$ClassName" : "TCastleViewport",
+      "Camera" : {
+        "$$ClassName" : "TCastleCamera",
+        "InitialPositionPersistent" : {
+          "$$ClassName" : "TCastleVector3Persistent",
+          "Z" : 5.0000000000000000E+002
+        },
+        "Name" : "Camera",
+        "Orthographic" : {
+          "$$ClassName" : "TCastleOrthographic",
+          "Name" : "Orthographic"
+        },
+        "Perspective" : {
+          "$$ClassName" : "TCastlePerspective",
+          "Name" : "Perspective"
+        },
+        "ProjectionFar" : 1.0000000000000000E+003,
+        "ProjectionNear" : -1.0000000000000000E+003,
+        "ProjectionType" : "ptOrthographic"
+      },
+      "FullSize" : true,
+      "Items" : {
+        "$$ClassName" : "TCastleRootTransform",
+        "Name" : "Items",
+        "PhysicsProperties" : {
+          "$$ClassName" : "TPhysicsProperties",
+          "Name" : "PhysicsProperties"
+        },
+        "$Children" : [
+          {
+            "$$ClassName" : "TCastleTransform",
+            "Name" : "SpriteTransform",
+            "$Children" : [
+              {
+                "$$ClassName" : "TCastleScene",
+                "AutoAnimationLoop" : false,
+                "ExposeTransforms" : [
+                ],
+                "Name" : "Sprite",
+                "ProcessEvents" : true,
+                "RenderOptions" : {
+                  "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                  "BlendingSourceFactor" : "bsOne",
+                  "MagnificationFilter" : "magLinear",
+                  "MinificationFilter" : "minLinear",
+                  "Name" : "RenderOptions"
+                },
+                "ScalePersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "X" : 1.0000000149011612E-001,
+                  "Y" : 1.0000000149011612E-001,
+                  "Z" : 1.0000000149011612E-001
+                },
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "X" : 1.1010000000000000E+003,
+                  "Y" : 2.1200000000000000E+002
+                },
+                "URL" : "castle-data:/sprites/satania/idle/skeleton.x3dv"
+              }
+            ]
+          }
+        ]
+      },
+      "Name" : "Viewport",
+      "Transparent" : true
+    },
+    {
+      "$$ClassName" : "TCastleRectangleControl",
+      "AutoSizeToChildren" : true,
+      "Border" : {
+        "$$ClassName" : "TBorder",
+        "AllSides" : 4.0000000000000000E+000
+      },
+      "BorderColorPersistent" : {
+        "$$ClassName" : "TCastleColorPersistent",
+        "Alpha" : 1.0000000000000000E+000,
+        "Red" : 3.0000001192092896E-001
+      },
+      "Bottom" : 1.0000000000000000E+002,
+      "ClipChildren" : true,
+      "Height" : 1.4000000000000000E+002,
+      "Name" : "ChatBubble",
+      "Width" : 3.6000000000000000E+002,
+      "$Children" : [
+        {
+          "$$ClassName" : "TCastleUserInterface",
+          "AutoSizeToChildren" : true,
+          "Border" : {
+            "$$ClassName" : "TBorder",
+            "Bottom" : 8.0000000000000000E+000,
+            "Left" : 8.0000000000000000E+000,
+            "Right" : 8.0000000000000000E+000
+          },
+          "ClipChildren" : true,
+          "Culling" : true,
+          "FullSize" : true,
+          "Name" : "Group2",
+          "VerticalAnchorParent" : "vpTop",
+          "VerticalAnchorSelf" : "vpTop",
+          "$Children" : [
+            {
+              "$$ClassName" : "TCastleTypingLabel",
+              "ClipChildren" : true,
+              "CustomFont" : "FontSystem",
+              "FontSize" : 1.6000000000000000E+001,
+              "Height" : 5.0000000000000000E+001,
+              "Html" : true,
+              "MaxWidth" : 3.5200000000000000E+002,
+              "Name" : "ChatText",
+              "Text" : [
+              ],
+              "TypingSpeed" : 2.4000000000000000E+001,
+              "VerticalAlignment" : "vpTop",
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$$ClassName" : "TCastleImageControl",
+      "Content" : {
+        "$$ClassName" : "TCastleImagePersistent",
+        "URL" : "castle-data:/ui/speak-bubble-arrow.png"
+      },
+      "Name" : "ChatBubbleArrow"
+    }
+  ]
+}

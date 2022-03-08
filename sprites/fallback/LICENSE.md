@@ -1,0 +1,1 @@
+The art is done by an anon on /g/ /satania/ thread, thus all rights reserved to that anon.

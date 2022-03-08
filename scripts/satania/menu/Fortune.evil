@@ -1,0 +1,8 @@
+if os != 'linux' {
+  talk('This command is not available on your OS at the moment.')
+  scheme_load(scheme_default)
+}
+
+s = process_run('fortune')
+while process_is_running(s) yield
+talk(process_result_get(s))
