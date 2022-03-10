@@ -26,25 +26,33 @@ while true {
   ms = months(chat)
   ns = numbers(chat)
   ms_len = length(ms)
-  ns_len = length(ns)
+  ns_len = length(ns)               
+  if (string_find(chat, 'today') >= 0) { 
+    date_final = now
+    talk('<font color="#ff0000">Today</font>, right?')
+  } else
+  if (string_find(chat, 'tomorrow') >= 0) {
+    date_final = dt_day_add(now, 1)
+    talk('<font color="#ff0000">Tomorrow</font>, right?')
+  } else
   if ms_len = 0 & ns_len = 1 {
     date_final = dt_day_add(now, ns[0])
-    talk(string_format('<font color="#ff0000">{0}</font> days from now, is this right?', ns[0]))
+    talk(string_format('<font color="#ff0000">{0}</font> days from now, right?', ns[0]))
   } else
   if ms_len = 1 & ns_len = 1 {
     day = ns[0]
     month = ms[0]  
     date_final = dt_date_set(year, month, day)
-    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, is this right?', day, month, year))
+    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, right?', month, day, year))
   } else
-  if ms_len = 2 & ns_len = 1 {
+  if ms_len = 1 & ns_len = 2 {
     day = ns[0]
     month = ms[0]  
-    year = ms[0]  
+    year = ns[0]
     date_final = dt_date_set(year, month, day)
-    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, is this right?', day, month, year))
+    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, right?', month, day, year))
   } else {
-    talk("I don't understand. Let's try again.\n\nWhich day do you want me to set?")
+    talk("I don't understand. Let's try again.")
     continue
   }
   chat = ''
@@ -56,7 +64,7 @@ while true {
   if length(string_grep(chat, 'yes', 'yeah', 'right')) > 0 {
     break
   }
-  talk("Let's try again.\n\nWhich day do you want me to set?")
+  talk("Let's try again.")
 }
 
 // Set time
@@ -73,14 +81,14 @@ while true {
   ns_len = length(ns)
   if ns_len = 1 {
     hour = ns[0]
-    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, is this right?', hour, minute))
+    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, right?', hour, minute))
   } else
   if ns_len = 2 {
     hour = ns[0]  
     minute = ns[1]
-    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, is this right?', hour, minute))
+    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, right?', hour, minute))
   } else {
-    talk("I don't understand. Let's try again.\n\nWhich time do you want me to set?")
+    talk("I don't understand. Let's try again.")
     continue
   }   
   chat = ''
@@ -93,7 +101,7 @@ while true {
     time_final = dt_time_set(hour, minute, 0, 0)
     break
   }
-  talk("Let's try again.\n\nWhich time do you want me to set?")
+  talk("Let's try again.")
 }
 
 // Set message
@@ -117,7 +125,7 @@ while true {
   if length(string_grep(chat, 'yes', 'yeah', 'right')) > 0 {
     break
   }
-  talk("Let's try again.\n\nWhich time do you want me to set?")
+  talk("Let's try again.")
 }
 
 reminder_create(date_final, time_final, string_format(script, message))

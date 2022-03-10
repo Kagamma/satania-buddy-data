@@ -1,7 +1,7 @@
 reminders = reminder_today_get
 
 if length(reminders) > 0 {
-  s = 'There are things you have to do today at:\n\n';
+  s = 'There are things you need to do today at:\n\n';
   for i = 0 to length(reminders) - 1 {
     t = reminders[i]
     s = s + string_format('- <font color="#ff0000">{0}h{1}m</font>\n\n', t[0], t[1])
