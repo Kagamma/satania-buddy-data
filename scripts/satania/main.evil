@@ -1,13 +1,22 @@
 if is_silent
   scheme_load('main-silent.evil')
 
-sprite_load('idle/skeleton.x3dv')
+sprite = ''
+anim = ''
+if is_sow {
+  sprite = 'sit/skeleton.x3dv' 
+  anim = 'idle_' + string(random(2) + 1)
+} else {
+  sprite = 'idle/skeleton.x3dv'  
+  anim = 'idle_' + string(random(3) + 1)
+}
+
+sprite_load(sprite)
 sprite_scale_set(0.1)
-anim = 'idle_' + string(random(3) + 1)
 sprite_animation_play(anim, true)
 sprite_animation_play('blink_loop', true)
 while true {
-  t = random(25) + 5
+  t = random(30) + 30
   while t > 0 {
     yield
     t = t - delta_time
@@ -28,19 +37,21 @@ while true {
     flag_set('emailDelay', string(ticks))
     scheme_load('menu/Email.evil')
   }
-  r = random(32)
-  if r < 10 {
-    scheme_load('itoddlers-btfo.evil')
-  } else if (r < 20) & is_lewd {
-    scheme_load('jump.evil')
-  } else if (r < 30) & is_lewd {
-    scheme_load('lift.evil')
-  } else {
-    process_run('fortune')
-    while process_is_running('fortune')
-      yield
-    m = process_result_get('fortune')
-    if m != ''
-      talk(m)
+  r = random(100)
+  if (r < 10) & is_lewd { 
+    r2 = random(2)     
+    if r2 = 0
+      scheme_load('jump.evil')
+    else
+      scheme_load('lift.evil')
+  } else if (r < 20) {
+    r2 = random(2)
+    if r2 = 0
+      scheme_load('menu/News - Gentoo Linux.evil');
+    else
+      scheme_load('menu/News - Arch Linux.evil'); 
+  } else if (r < 30) {
+    // Reminders
+    scheme_load('menu/Reminders.evil')
   }
 }

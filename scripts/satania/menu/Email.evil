@@ -1,4 +1,8 @@
-sprite_load('idle/skeleton.x3dv')
+if is_sow
+  sprite_load('sit/skeleton.x3dv')
+else
+  sprite_load('idle/skeleton.x3dv')
+
 sprite_scale_set(0.1)
 sprite_animation_play('blink_loop', true)
 sprite_animation_play('idle_to_read', false)

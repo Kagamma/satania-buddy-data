@@ -1,0 +1,129 @@
+chat_mode_set(CHATMODE_SCRIPT)
+
+// Declaratoin
+now = dt_now
+minute = 0
+hour = 0
+day = 0
+month = 0
+year = 0
+date_final = 0
+time_final = 0
+message = ''
+script = 's ="{0}" notify(s) talk(s) sound_play("beep.ogg")'
+
+// Set date
+talk('Okay, let me set a reminder for you.\n\nWhich day do you want me to set?')
+while true {
+  day = dt_day_get(now)
+  month = dt_month_get(now)
+  year = dt_year_get(now)
+  chat = ''
+  while chat = '' {
+    chat = chat_result_get
+    yield
+  }
+  ms = months(chat)
+  ns = numbers(chat)
+  ms_len = length(ms)
+  ns_len = length(ns)
+  if ms_len = 0 & ns_len = 1 {
+    date_final = dt_day_add(now, ns[0])
+    talk(string_format('<font color="#ff0000">{0}</font> days from now, is this right?', ns[0]))
+  } else
+  if ms_len = 1 & ns_len = 1 {
+    day = ns[0]
+    month = ms[0]  
+    date_final = dt_date_set(year, month, day)
+    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, is this right?', day, month, year))
+  } else
+  if ms_len = 2 & ns_len = 1 {
+    day = ns[0]
+    month = ms[0]  
+    year = ms[0]  
+    date_final = dt_date_set(year, month, day)
+    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, is this right?', day, month, year))
+  } else {
+    talk("I don't understand. Let's try again.\n\nWhich day do you want me to set?")
+    continue
+  }
+  chat = ''
+  // Yes/No
+  while length(string_grep(chat, 'yes', 'yeah', 'right', 'wrong', 'no', 'nope')) = 0 {
+    chat = chat_result_get
+    yield
+  }
+  if length(string_grep(chat, 'yes', 'yeah', 'right')) > 0 {
+    break
+  }
+  talk("Let's try again.\n\nWhich day do you want me to set?")
+}
+
+// Set time
+talk('Which time do you want me to set?')
+while true {
+  minute = 0
+  hour = 0
+  chat = ''
+  while chat = '' {
+    chat = chat_result_get
+    yield
+  }
+  ns = numbers(chat)
+  ns_len = length(ns)
+  if ns_len = 1 {
+    hour = ns[0]
+    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, is this right?', hour, minute))
+  } else
+  if ns_len = 2 {
+    hour = ns[0]  
+    minute = ns[1]
+    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, is this right?', hour, minute))
+  } else {
+    talk("I don't understand. Let's try again.\n\nWhich time do you want me to set?")
+    continue
+  }   
+  chat = ''
+  // Yes/No
+  while length(string_grep(chat, 'yes', 'yeah', 'right', 'wrong', 'no', 'nope')) = 0 {
+    chat = chat_result_get
+    yield
+  }
+  if length(string_grep(chat, 'yes', 'yeah', 'right')) > 0 {
+    time_final = dt_time_set(hour, minute, 0, 0)
+    break
+  }
+  talk("Let's try again.\n\nWhich time do you want me to set?")
+}
+
+// Set message
+talk('Which message do you want me to remind you?')
+while true {
+  message = ''
+  chat = ''
+  while chat = '' {
+    chat = chat_result_get
+    yield
+  }
+  message = chat
+  talk(string_format('<font color="#ff0000">{0}</font>, is this right?', message))
+        
+  chat = ''
+  // Yes/No
+  while length(string_grep(chat, 'yes', 'yeah', 'right', 'wrong', 'no', 'nope')) = 0 {
+    chat = chat_result_get
+    yield
+  }
+  if length(string_grep(chat, 'yes', 'yeah', 'right')) > 0 {
+    break
+  }
+  talk("Let's try again.\n\nWhich time do you want me to set?")
+}
+
+reminder_create(date_final, time_final, string_format(script, message))
+
+talk(string_format(
+  'Done!\n\n<font color="#0000ff">Time:</font> {0}/{1}/{2} {3}h{4}m\n<font color="#0000ff">Message:</font> {5}',
+  month, day, year, hour, minute, message
+))
+

@@ -1,0 +1,17 @@
+q = url_get('https://www.gentoo.org/news/')
+while url_is_success(q) = false yield
+data = url_result_get(q)
+dates = url_query(data, '/html/body/div/div/div/article/h2[2]/small')
+titles = url_query(data, '/html/body/div/div/div/article/h2[2]/a')
+if length(dates) > 0 {
+  s = '<font color="#ff0000">Gentoo Linux</font> latest news:'
+  for i = 0 to min(2, length(dates)) {
+    s = s + '\n\n'
+    date = string_replace(dates[i], '(', '')
+    date = string_replace(date, ')', '')
+    s = s + '<font color="#0000ff">Date:</font> ' + date + '\n';
+    s = s + '<font color="#0000ff">Title:</font> ' + titles[i];
+  }
+  talk(s)
+}
+

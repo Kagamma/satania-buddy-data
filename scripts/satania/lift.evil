@@ -1,4 +1,8 @@
-sprite_load('idle/skeleton.x3dv')
+if is_sow {
+  sprite_load('sit/skeleton.x3dv')
+} else {
+  sprite_load('idle/skeleton.x3dv')
+}
 sprite_scale_set(0.1)
 sprite_animation_play('blink_loop', true)
 sprite_animation_play('lift_idle_to_hide', false)
@@ -20,3 +24,4 @@ wait(1)
 sprite_animation_play('lift_hide_to_idle', false)
 while sprite_animation_is_playing('lift_hide_to_idle')
   yield
+

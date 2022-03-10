@@ -1,3 +1,8 @@
+if is_sow {
+  // Sit on window doesn't have jump, so we default to lift
+  scheme_load('lift.evil')
+}
+
 sprite_load('idle/skeleton.x3dv')
 sprite_scale_set(0.1)
 sprite_animation_play('blink_loop', true)
