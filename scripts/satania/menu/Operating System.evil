@@ -3,6 +3,6 @@ if os = 'windows'
 else if os = 'linux'
   talk('You are using <font color="#0000ff">Linux</font>!')
 else if os = 'darwin'
-  scheme_load('itoddlers-btfo.evil')
+  scheme_load('menu/iToddlers BTFO.evil')
 else
   talk('You are using something niche, aren\'t you?')

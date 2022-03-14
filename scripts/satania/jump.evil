@@ -11,7 +11,7 @@ while sprite_animation_is_playing('idle_to_jump')
   yield
 sprite_animation_speed_set('jump', 0.8)
 c = 5 + random(15) // Jump at least 5 times
-while c >= 0 {
+while c > 0 {
   sprite_animation_play('jump', false)
   while sprite_animation_is_playing('jump')
     yield

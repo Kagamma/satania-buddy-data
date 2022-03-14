@@ -1,0 +1,24 @@
+s = clipboard_get
+path = '_clipboard_result.jpg'
+if fs_file_exists(path) = true {
+  fs_file_delete(path)
+}
+if s == '' {
+  clipboard_to_file(path)
+} else {
+  path = s
+}
+if (fs_file_exists(path) = true) &
+   (length(string_grep(string_lowercase(path), '.png', '.jpg', '.jpeg', '.bmp', '.tga', '.gif', '.pcx')) > 0) {
+  search = url_upload('https://litterbox.catbox.moe/resources/internals/api.php',
+    array_create('reqtype', 'fileupload', 'time', '1h'),
+    'fileToUpload', path)
+  talk('Okay, I will search for <font color="#ff0000">' + path + '</font>')
+  while url_is_success(search) = false yield
+  data = url_result_get(search)
+  if string_find(data, 'http') >= 0
+    url_open('https://yandex.com/images/search?rpt=imageview&url=' + data)
+} else {
+  talk("That doesn't look like an image.")
+}
+

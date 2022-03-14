@@ -23,7 +23,7 @@ while true {
     chat = chat_result_get
     yield
   }
-  ms = months(chat)
+  ms = months_to_numbers(chat)
   ns = numbers(chat)
   ms_len = length(ms)
   ns_len = length(ns)               
@@ -34,10 +34,27 @@ while true {
   if (string_find(chat, 'tomorrow') >= 0) {
     date_final = dt_day_add(now, 1)
     talk('<font color="#ff0000">Tomorrow</font>, right?')
+  } else 
+  if string_find(chat, 'next month') >= 0 {
+    date_final = dt_month_add(now, 1)
+    talk('<font color="#ff0000">Next month</font>, right?')
+  } else
+  if string_find(chat, 'next year') >= 0 {
+    date_final = dt_year_add(now, 1)
+    talk('<font color="#ff0000">Next year</font>, right?')
   } else
   if ms_len = 0 & ns_len = 1 {
-    date_final = dt_day_add(now, ns[0])
-    talk(string_format('<font color="#ff0000">{0}</font> days from now, right?', ns[0]))
+    if string_find(chat, 'month') >= 0 {
+      date_final = dt_month_add(now, ns[0])
+      talk(string_format('<font color="#ff0000">{0} months</font> from now, right?', ns[0]))
+    } else  
+    if string_find(chat, 'year') >= 0 {
+      date_final = dt_year_add(now, ns[0])
+      talk(string_format('<font color="#ff0000">{0} years</font> from now, right?', ns[0]))
+    } else {
+      date_final = dt_day_add(now, ns[0])
+      talk(string_format('<font color="#ff0000">{0} days</font> from now, right?', ns[0]))
+    }
   } else
   if ms_len = 1 & ns_len = 1 {
     day = ns[0]
@@ -114,7 +131,9 @@ while true {
     yield
   }
   message = chat
-  talk(string_format('<font color="#ff0000">{0}</font>, is this right?', message))
+  if length(message) > 0
+    message[0] = string_uppercase(message[0])
+  talk(string_format('<font color="#ff0000">{0}</font>, right?', message))
         
   chat = ''
   // Yes/No
@@ -129,6 +148,10 @@ while true {
 }
 
 reminder_create(date_final, time_final, string_format(script, message))
+
+day = dt_day_get(date_final)
+month = dt_month_get(date_final)
+year = dt_year_get(date_final)
 
 talk(string_format(
   'Done!\n\n<font color="#0000ff">Time:</font> {0}/{1}/{2} {3}h{4}m\n<font color="#0000ff">Message:</font> {5}',

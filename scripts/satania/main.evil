@@ -52,6 +52,6 @@ while true {
       scheme_load('menu/News - Arch Linux.evil'); 
   } else if (r < 30) {
     // Reminders
-    scheme_load('menu/Reminders.evil')
+    scheme_load('menu/Reminder.evil')
   }
 }
