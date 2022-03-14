@@ -1,15 +1,23 @@
-s = clipboard_get
+// Reverse Image Search using Yandex
+
 path = '_clipboard_result.jpg'
+// Make sure no _clipboard_result.jpg around
 if fs_file_exists(path) = true {
   fs_file_delete(path)
 }
+// Check clipboard 
+s = clipboard_get
 if s == '' {
+  // Data in clipboard is not a text, try to save it as image
   clipboard_to_file(path)
 } else {
+  // Data in clipboard is a text
   path = s
 }
+// Perform image search
+// The idea is to upload the file to a temporary host, then pass URL to Yandex
 if (fs_file_exists(path) = true) &
-   (length(string_grep(string_lowercase(path), '.png', '.jpg', '.jpeg', '.bmp', '.tga', '.gif', '.pcx')) > 0) {
+   (length(string_grep(string_lowercase(path), '.ico', '.png', '.jpg', '.jpeg', '.bmp', '.tga', '.gif', '.pcx')) > 0) {
   search = url_upload('https://litterbox.catbox.moe/resources/internals/api.php',
     array_create('reqtype', 'fileupload', 'time', '1h'),
     'fileToUpload', path)
