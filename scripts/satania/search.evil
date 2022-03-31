@@ -1,3 +1,5 @@
+#include 'data/scripts/common.evil'
+
 chat_mode_set(CHATMODE_SCRIPT)
 talk('What do you want to find?')
 chat = ''
@@ -20,5 +22,5 @@ while true {
   }
   talk('Please try again.\nWhat do you want to find?')
 }
-url_open('https://www.google.com/?q=' + chat)
+url_open(string_format(default_search_engine, chat))
 

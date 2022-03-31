@@ -1,6 +1,9 @@
+#include 'data/scripts/common.evil'
+
 // Reverse Image Search using Yandex
 
 path = '_clipboard_result.jpg'
+
 // Make sure no _clipboard_result.jpg around
 if fs_file_exists(path) = true {
   fs_file_delete(path)
@@ -14,6 +17,13 @@ if s == '' {
   // Data in clipboard is a text
   path = s
 }
+data = ''
+mess = 'Looking for it...'
+// path is an HTTP URL?
+if length(string_grep(path, 'http:', 'https:')) > 0 {
+  data = path
+  talk(mess)
+} else
 // Perform image search
 // The idea is to upload the file to a temporary host, then pass URL to Yandex
 if (fs_file_exists(path) = true) &
@@ -21,12 +31,12 @@ if (fs_file_exists(path) = true) &
   search = url_upload('https://litterbox.catbox.moe/resources/internals/api.php',
     array_create('reqtype', 'fileupload', 'time', '1h'),
     'fileToUpload', path)
-  talk('Okay, I will search for <font color="#ff0000">' + path + '</font>')
+  talk(mess)
   while url_is_success(search) = false yield
   data = url_result_get(search)
-  if string_find(data, 'http') >= 0
-    url_open('https://yandex.com/images/search?rpt=imageview&url=' + data)
-} else {
-  talk("That doesn't look like an image.")
 }
+if string_find(data, 'http') >= 0
+  url_open(string_format(default_reverse_image_search_engine, data))
+else
+  talk("That doesn't look like an image.")
 
