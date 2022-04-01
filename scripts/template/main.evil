@@ -1,0 +1,7 @@
+sprite_load('sprites.plist') // Load sprite sheet
+sprite_scale_set(0.4) // Set sprite's scaling value
+sprite_animation_talk_set('talk_loop', 'idle') // Set default talking animations
+
+sprite_animation_play('idle', true) // Play "idle" animation
+
+while true yield // Infinite loop
