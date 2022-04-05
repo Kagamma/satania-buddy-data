@@ -1,15 +1,4 @@
-q = url_get('https://archlinux.org/news/')
-while url_is_success(q) = false yield
-data = url_result_get(q)
-dates = url_query(data, '/html/body/div[2]/div[2]/table/tbody/tr/td[1]')
-titles = url_query(data, '/html/body/div[2]/div[2]/table/tbody/tr/td[2]/a')
-if length(dates) > 0 {
-  s = '<font color="#ff0000">Arch Linux</font> latest news:'
-  for i = 0 to min(2, length(dates)) {
-    s = s + '\n\n'
-    s = s + '<font color="#0000ff">Date:</font> ' + dates[i] + '\n'
-    s = s + '<font color="#0000ff">Title:</font> ' + titles[i]
-  }
-  talk(s)
-}
+#include 'data/scripts/libs/news.evil'
+
+news_arch()
 

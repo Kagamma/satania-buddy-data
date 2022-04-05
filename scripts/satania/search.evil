@@ -1,26 +1,4 @@
-#include 'data/scripts/common.evil'
+#include 'data/scripts/libs/search.evil'
 
-chat_mode_set(CHATMODE_SCRIPT)
-talk('What do you want to find?')
-chat = ''
-while true {
-  chat = ''
-  while chat = '' {
-    chat = chat_result_get
-    yield
-  }
-  talk('Is <font color="#ff0000">' + chat + '</font> the one you are looking for?')
-
-  chat = ''
-  while length(string_grep(chat, 'yes', 'yeah', 'right', 'wrong', 'no', 'nope')) = 0 {
-    chat = chat_result_get
-    yield
-  }
-
-  if length(string_grep(chat, 'yes', 'yeah', 'right')) > 0 {
-    break
-  }
-  talk('Please try again.\nWhat do you want to find?')
-}
-url_open(string_format(default_search_engine, chat))
+search_keyword()
 

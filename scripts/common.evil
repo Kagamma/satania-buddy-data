@@ -1,7 +1,0 @@
-// Common constants
-
-default_search_engine = 'https://www.google.com/?q={0}'
-default_reverse_image_search_engine = 'https://yandex.com/images/search?rpt=imageview&url={0}'
-
-// Common functions goes here
-
