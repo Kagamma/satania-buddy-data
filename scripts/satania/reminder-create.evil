@@ -46,28 +46,28 @@ while true {
   if ms_len = 0 & ns_len = 1 {
     if string_find(chat, 'month') >= 0 {
       date_final = dt_month_add(now, ns[0])
-      talk(string_format('<font color="#ff0000">{0} months</font> from now, right?', ns[0]))
+      talk(string_format('<font color="#ff0000">{0} months</font> from now, right?', [ns[0]]))
     } else  
     if string_find(chat, 'year') >= 0 {
       date_final = dt_year_add(now, ns[0])
-      talk(string_format('<font color="#ff0000">{0} years</font> from now, right?', ns[0]))
+      talk(string_format('<font color="#ff0000">{0} years</font> from now, right?', [ns[0]]))
     } else {
       date_final = dt_day_add(now, ns[0])
-      talk(string_format('<font color="#ff0000">{0} days</font> from now, right?', ns[0]))
+      talk(string_format('<font color="#ff0000">{0} days</font> from now, right?', [ns[0]]))
     }
   } else
   if ms_len = 1 & ns_len = 1 {
     day = ns[0]
     month = ms[0]  
     date_final = dt_date_set(year, month, day)
-    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, right?', month, day, year))
+    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, right?', [month, day, year]))
   } else
   if ms_len = 1 & ns_len = 2 {
     day = ns[0]
     month = ms[0]  
     year = ns[0]
     date_final = dt_date_set(year, month, day)
-    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, right?', month, day, year))
+    talk(string_format('<font color="#ff0000">{0}/{1}/{2}</font>, right?', [month, day, year]))
   } else {
     talk("I don't understand. Let's try again.")
     continue
@@ -98,12 +98,12 @@ while true {
   ns_len = length(ns)
   if ns_len = 1 {
     hour = ns[0]
-    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, right?', hour, minute))
+    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, right?', [hour, minute]))
   } else
   if ns_len = 2 {
     hour = ns[0]  
     minute = ns[1]
-    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, right?', hour, minute))
+    talk(string_format('<font color="#ff0000">{0}h{1}m</font>, right?', [hour, minute]))
   } else {
     talk("I don't understand. Let's try again.")
     continue
@@ -133,7 +133,7 @@ while true {
   message = chat
   if length(message) > 0
     message[0] = string_uppercase(message[0])
-  talk(string_format('<font color="#ff0000">{0}</font>, right?', message))
+  talk(string_format('<font color="#ff0000">{0}</font>, right?', [message]))
         
   chat = ''
   // Yes/No
@@ -155,6 +155,6 @@ year = dt_year_get(date_final)
 
 talk(string_format(
   'Done!\n\n<font color="#0000ff">Time:</font> {0}/{1}/{2} {3}h{4}m\n<font color="#0000ff">Message:</font> {5}',
-  month, day, year, hour, minute, message
+  [month, day, year, hour, minute, message]
 ))
 

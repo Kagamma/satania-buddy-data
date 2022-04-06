@@ -24,7 +24,7 @@ fn search_keyword {
     }
     talk('Please try again.\nWhat do you want to find?')
   }
-  url_open(string_format(default_search_engine, chat))
+  url_open(string_format(default_search_engine, [chat]))
 }
 
 fn search_image {
@@ -64,7 +64,7 @@ fn search_image {
     data = url_result_get(search)
   }
   if string_find(data, 'http') >= 0
-    url_open(string_format(default_reverse_image_search_engine, data))
+    url_open(string_format(default_reverse_image_search_engine, [data]))
   else
     talk("That doesn't look like an image.")
 }
