@@ -1,0 +1,22 @@
+fn email_notify {
+  email_load
+  while email_is_loading yield
+  s = '';
+  if email_is_success {
+    c = email_unseen_count
+    s = 'You have <font color="#ff0000">'
+      + string(c)
+      + '</font> unread email'
+    if c > 1
+      s = s + 's'
+    if c > 0 {
+      s = s + '\n\nMost recent email:'
+        + '\n - <font color="#0000ff">Sender: </font>' + email_sender_get(0)
+        + '\n - <font color="#0000ff">Subject: </font>' + email_subject_get(0)
+    }
+  } else {
+    s = 'Cannot load emails. Make sure you configure your mailbox in <font color="#0000ff">Settings</font>.'
+  }
+  talk(s)
+}
+
