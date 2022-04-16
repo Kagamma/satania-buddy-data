@@ -44,13 +44,13 @@ while true {
       scheme_load('jump.evil')
     else
       scheme_load('lift.evil')
-  } else if (r < 20) {
+  } else if (r < 15) {
     r2 = random(2)
     if r2 = 0
       scheme_load('menu/News - Gentoo Linux.evil');
     else
       scheme_load('menu/News - Arch Linux.evil'); 
-  } else if (r < 30) {
+  } else if (r < 25) {
     // Reminders
     scheme_load('menu/Reminder.evil')
   }
