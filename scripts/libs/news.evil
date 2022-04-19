@@ -7,9 +7,9 @@ fn news_arch {
   if length(dates) > 0 {
     s = '<font color="#ff0000">Arch Linux</font> latest news:'
     for i = 0 to min(2, length(dates)) {
-      s = s + '\n\n'
-      s = s + '<font color="#0000ff">Date:</font> ' + dates[i] + '\n'
-      s = s + '<font color="#0000ff">Title:</font> ' + titles[i]
+      s += '\n\n'
+      s += '<font color="#0000ff">Date:</font> ' + dates[i] + '\n'
+      s += '<font color="#0000ff">Title:</font> ' + titles[i]
     }
     talk(s)
   }
@@ -24,11 +24,11 @@ fn news_gentoo {
   if length(dates) > 0 {
     s = '<font color="#ff0000">Gentoo Linux</font> latest news:'
     for i = 0 to min(2, length(dates)) {
-      s = s + '\n\n'
+      s += '\n\n'
       date = string_replace(dates[i], '(', '')
       date = string_replace(date, ')', '')
-      s = s + '<font color="#0000ff">Date:</font> ' + date + '\n';
-      s = s + '<font color="#0000ff">Title:</font> ' + titles[i];
+      s += '<font color="#0000ff">Date:</font> ' + date + '\n';
+      s += '<font color="#0000ff">Title:</font> ' + titles[i];
     }
     talk(s)
   }

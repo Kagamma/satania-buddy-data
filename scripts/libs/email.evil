@@ -8,9 +8,9 @@ fn email_notify {
       + string(c)
       + '</font> unread email'
     if c > 1
-      s = s + 's'
+      s += 's'
     if c > 0 {
-      s = s + '\n\nMost recent email:'
+      s += '\n\nMost recent email:'
         + '\n - <font color="#0000ff">Sender: </font>' + email_sender_get(0)
         + '\n - <font color="#0000ff">Subject: </font>' + email_subject_get(0)
     }
