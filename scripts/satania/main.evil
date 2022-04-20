@@ -26,14 +26,14 @@ while true {
   emailDelay = flag_get('emailDelay')
   if emailDelay = '' {
     flag_set('emailDelay', '0')
-    if email_is_configured = 0 {
+    if email_imap_is_configured = 0 {
       talk('I can check new emails for you, just configure your mailbox in <font color="#0000ff">Settings</font>.')
       wait(5)
     }
   }
   emailDelay = number(flag_get('emailDelay'))
   // Check for emails every 5 minutes
-  if email_is_configured & (ticks - emailDelay >= 300000) {
+  if email_imap_is_configured & (ticks - emailDelay >= 300000) {
     flag_set('emailDelay', string(ticks))
     scheme_load('menu/Email.evil')
   }
