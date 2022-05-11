@@ -27,17 +27,17 @@ while true {
 
   if is_speech_to_text
     continue
+
   email_delay = get('email_delay')
-  if email_delay = '' {
-    set('email_delay', '0')
-    if email_imap_is_configured = 0 {
+  if email_delay = 0 {
+    if email_imap_is_configured = false {
+      set('email_delay', string(ticks))
       talk('I can check new emails for you, just configure your mailbox in <font color="#0000ff">Settings</font>.')
       wait(5)
     }
   }
-  email_delay = get('email_delay')
   // Check for emails every 5 minutes
-  if email_imap_is_configured & (ticks - email_delay >= 300000) {
+  if (email_imap_is_configured = true) & (ticks - email_delay >= 300000) {
     set('email_delay', string(ticks))
     scheme_load('menu/Email.evil')
   }
