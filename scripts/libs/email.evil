@@ -1,7 +1,8 @@
-fn email_notify {
+fn email_notify(is_empty_notify) {
   email_imap_load
   while email_imap_is_loading yield
   s = '';
+  is_empty = false
   if email_imap_is_success {
     c = email_imap_unseen_count
     s = 'You have <font color="#ff0000">'
@@ -13,10 +14,13 @@ fn email_notify {
       s += '\n\nMost recent email:'
         + '\n - <font color="#0000ff">Sender: </font>' + email_imap_sender_get(0)
         + '\n - <font color="#0000ff">Subject: </font>' + email_imap_subject_get(0)
+    } else {
+      is_empty = true
     }
   } else {
     s = 'Cannot load emails. Make sure you configure your mailbox in <font color="#0000ff">Settings</font>.'
   }
-  talk(s)
+  if is_empty = false
+    talk(s)
 }
 

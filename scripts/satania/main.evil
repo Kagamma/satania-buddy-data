@@ -36,8 +36,8 @@ while true {
       wait(5)
     }
   }
-  // Check for emails every 10 minutes
-  if (email_imap_is_configured = true) & (ticks - email_delay >= 600000) {
+  // Check for emails every 5 minutes
+  if (email_imap_is_configured = true) & (ticks - email_delay >= 300000) {
     set('email_delay', ticks)
     scheme_load('menu/Email.evil')
   }
