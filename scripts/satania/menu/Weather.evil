@@ -8,3 +8,5 @@ geo = geo_get(ip_get)
 data = weather_get(geo[0], geo[1], units, api_key)
 
 talk(string_format('Current weather in <font color="#ff0000">{0}</font> is <font color="#0000ff">{1}</font>, with temperature of <font color="#0000ff">{2}C</font> and humidity of <font color="#0000ff">{3}%</font>.', [data[0], data[1], data[2], data[3]]))
+set('weather_delay', string(ticks))
+

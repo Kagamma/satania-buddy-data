@@ -15,34 +15,45 @@ sprite_load(sprite)
 sprite_scale_set(0.1)
 sprite_animation_play(anim, true)
 sprite_animation_play('blink_loop', true)
+
+t = get('main_random')
 while true {
-  t = random(30) + 30
   while t > 0 {
     yield
     t = t - delta_time
   }
+  t = random(30) + 30
+  set('main_random', t)
+
   if is_speech_to_text
     continue
-  email_delay = flag_get('email_delay')
+  email_delay = get('email_delay')
   if email_delay = '' {
-    flag_set('email_delay', '0')
+    set('email_delay', '0')
     if email_imap_is_configured = 0 {
       talk('I can check new emails for you, just configure your mailbox in <font color="#0000ff">Settings</font>.')
       wait(5)
     }
   }
-  email_delay = number(flag_get('email_delay'))
+  email_delay = get('email_delay')
   // Check for emails every 5 minutes
   if email_imap_is_configured & (ticks - email_delay >= 300000) {
-    flag_set('email_delay', string(ticks))
+    set('email_delay', string(ticks))
     scheme_load('menu/Email.evil')
   }
 
   // Check for weather every 5 minutes
-  weather_delay = flag_get('weather_delay')
+  weather_delay = get('weather_delay')
   if (weather_delay = '') | (ticks - weather_delay >= 300000) {
-    flag_set('weather_delay', string(ticks))
+    set('weather_delay', string(ticks))
     scheme_load('menu/Weather.evil')
+  }
+
+  // Check for reminder every 5 minutes
+  reminder_delay = get('reminder_delay')
+  if (reminder_delay = '') | (ticks - reminder_delay >= 300000) {
+    set('reminder_delay', string(ticks))
+    scheme_load('menu/Reminder.evil')
   }
 
   r = random(100)
@@ -52,8 +63,5 @@ while true {
       scheme_load('jump.evil')
     else
       scheme_load('lift.evil')
-  } else if (r < 15) {
-    // Reminders
-    scheme_load('menu/Reminder.evil')
   }
 }
