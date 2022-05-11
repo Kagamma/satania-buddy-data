@@ -1,0 +1,8 @@
+fn ip_get {
+  a = url_get('https://api.ipify.org?format=json')
+  while url_is_success(a) = false yield
+  json = url_result_get(a)
+
+  result = json_get(json, 'ip')
+}
+
