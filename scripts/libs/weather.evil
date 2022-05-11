@@ -1,0 +1,14 @@
+fn weather_get(lat, lng, units, api_key) {
+  a = url_get(string_format('https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&units={2}&appid={3}', [lat, lng, units, api_key]))
+  while url_is_success(a) = false yield
+  json = url_result_get(a)
+
+  n    = string_replace(json_get(json, 'name'), '"', '')
+  desc = string_replace(json_get(json, 'weather[0].description'), '"', '')  
+  temp = json_get(json, 'main.temp')
+  humi = json_get(json, 'main.humidity')
+
+  result = [n, desc, temp, humi]
+}
+
+
