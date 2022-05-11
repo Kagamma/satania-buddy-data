@@ -23,20 +23,28 @@ while true {
   }
   if is_speech_to_text
     continue
-  emailDelay = flag_get('emailDelay')
-  if emailDelay = '' {
-    flag_set('emailDelay', '0')
+  email_delay = flag_get('email_delay')
+  if email_delay = '' {
+    flag_set('email_delay', '0')
     if email_imap_is_configured = 0 {
       talk('I can check new emails for you, just configure your mailbox in <font color="#0000ff">Settings</font>.')
       wait(5)
     }
   }
-  emailDelay = number(flag_get('emailDelay'))
+  email_delay = number(flag_get('email_delay'))
   // Check for emails every 5 minutes
-  if email_imap_is_configured & (ticks - emailDelay >= 300000) {
-    flag_set('emailDelay', string(ticks))
+  if email_imap_is_configured & (ticks - email_delay >= 300000) {
+    flag_set('email_delay', string(ticks))
     scheme_load('menu/Email.evil')
   }
+
+  // Check for weather every 5 minutes
+  weather_delay = flag_get('weather_delay')
+  if (email_delay = '') | (ticks - email_delay >= 300000) {
+    flag_set('weather_delay', string(ticks))
+    scheme_load('menu/Weather.evil')
+  }
+
   r = random(100)
   if (r < 10) & is_lewd { 
     r2 = random(2)     
@@ -45,12 +53,6 @@ while true {
     else
       scheme_load('lift.evil')
   } else if (r < 15) {
-    r2 = random(2)
-    if r2 = 0
-      scheme_load('menu/News - Gentoo Linux.evil');
-    else
-      scheme_load('menu/News - Arch Linux.evil'); 
-  } else if (r < 25) {
     // Reminders
     scheme_load('menu/Reminder.evil')
   }
