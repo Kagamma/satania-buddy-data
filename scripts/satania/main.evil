@@ -38,21 +38,21 @@ while true {
   }
   // Check for emails every 5 minutes
   if (email_imap_is_configured = true) & (ticks - email_delay >= 300000) {
-    set('email_delay', string(ticks))
+    set('email_delay', ticks)
     scheme_load('menu/Email.evil')
   }
 
   // Check for weather every 5 minutes
   weather_delay = get('weather_delay')
   if (weather_delay = '') | (ticks - weather_delay >= 300000) {
-    set('weather_delay', string(ticks))
+    set('weather_delay', ticks)
     scheme_load('menu/Weather.evil')
   }
 
   // Check for reminder every 5 minutes
   reminder_delay = get('reminder_delay')
   if (reminder_delay = '') | (ticks - reminder_delay >= 300000) {
-    set('reminder_delay', string(ticks))
+    set('reminder_delay', ticks)
     scheme_load('menu/Reminder.evil')
   }
 
