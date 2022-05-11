@@ -40,7 +40,7 @@ while true {
 
   // Check for weather every 5 minutes
   weather_delay = flag_get('weather_delay')
-  if (email_delay = '') | (ticks - email_delay >= 300000) {
+  if (weather_delay = '') | (ticks - weather_delay >= 300000) {
     flag_set('weather_delay', string(ticks))
     scheme_load('menu/Weather.evil')
   }
