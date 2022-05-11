@@ -5,14 +5,14 @@ fn ip_get {
   result = url_result_get(a)
 }
 
-fn geo_get(ip, api_key) {
-  a = url_get(string_format('https://api.ipgeolocation.io/ipgeo?apiKey={0}&ip={1}', [api_key, ip]))
+fn geo_get(ip) {
+  a = url_get('http://ip-api.com/json/' + ip)
   while url_is_success(a) = false yield
   json = url_result_get(a)
 
   result = [
-    number(json_get(json, 'latitude')),
-    number(json_get(json, 'longitude'))
+    json_get(json, 'lat'),
+    json_get(json, 'lon')
   ]
 }
 
