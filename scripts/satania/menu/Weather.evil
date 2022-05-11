@@ -1,10 +1,11 @@
 #include 'data/scripts/libs/weather.evil'
+#include 'data/scripts/libs/ip.evil'
 
-lat = 35.6895
-lng = 139.69171
 units = 'metric'
-api_key = 'b97d0e1a370bd2542e2ad62a17fc3d49'
+geo_api_key = '4d492fd0727949e4a2b9ac72a1383165'
+weather_api_key = 'b97d0e1a370bd2542e2ad62a17fc3d49'
 
-data = weather_get(lat, lng, units, api_key)
+geo = geo_get(ip_get, geo_api_key)
+data = weather_get(geo[0], geo[1], units, weather_api_key)
 
-talk(string_format('Current weather at <font color="#ff0000">{0}</font> is <font color="#0000ff">{1}</font>, with temperature of <font color="#0000ff">{2}C</font> and humidity of <font color="#0000ff">{3}%</font>', [data[0], data[1], data[2], data[3]]))
+talk(string_format('Current weather in <font color="#ff0000">{0}</font> is <font color="#0000ff">{1}</font>, with temperature of <font color="#0000ff">{2}C</font> and humidity of <font color="#0000ff">{3}%</font>.', [data[0], data[1], data[2], data[3]]))

@@ -1,8 +1,18 @@
 fn ip_get {
-  a = url_get('https://api.ipify.org?format=json')
+  a = url_get('https://api.ipify.org')
+  while url_is_success(a) = false yield
+
+  result = url_result_get(a)
+}
+
+fn geo_get(ip, api_key) {
+  a = url_get(string_format('https://api.ipgeolocation.io/ipgeo?apiKey={0}&ip={1}', [api_key, ip]))
   while url_is_success(a) = false yield
   json = url_result_get(a)
 
-  result = json_get(json, 'ip')
+  result = [
+    number(json_get(json, 'latitude')),
+    number(json_get(json, 'longitude'))
+  ]
 }
 
