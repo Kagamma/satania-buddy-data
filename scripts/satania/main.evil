@@ -1,3 +1,7 @@
+#include 'data/scripts/libs/reminder.evil'
+#include 'data/scripts/libs/email.evil'
+#include 'data/scripts/satania/libs/animations.evil'
+
 if is_silent
   scheme_load('main-silent.evil')
 
@@ -39,7 +43,10 @@ while true {
   // Check for emails every 5 minutes
   if (email_imap_is_configured = true) & (ticks - email_delay >= 300000) {
     set('email_delay', ticks)
-    scheme_load('menu/Email.evil')
+    anim_read_begin()
+    email_notify(false)
+    anim_read_end()
+    continue
   }
 
   // Check for weather every 10 minutes
@@ -53,7 +60,8 @@ while true {
   reminder_delay = get('reminder_delay')
   if (reminder_delay = '') | (ticks - reminder_delay >= 600000) {
     set('reminder_delay', ticks)
-    scheme_load('menu/Reminder.evil')
+    reminder_check(false)
+    continue
   }
 
   r = random(100)
