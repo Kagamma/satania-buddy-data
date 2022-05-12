@@ -46,7 +46,7 @@ while true {
     anim_read_begin()
     email_notify(false)
     anim_read_end()
-    continue
+    scheme_load(scheme_default)
   }
 
   // Check for weather every 10 minutes
@@ -61,7 +61,7 @@ while true {
   if (reminder_delay = '') | (ticks - reminder_delay >= 600000) {
     set('reminder_delay', ticks)
     reminder_check(false)
-    continue
+    scheme_load(scheme_default)
   }
 
   r = random(100)
