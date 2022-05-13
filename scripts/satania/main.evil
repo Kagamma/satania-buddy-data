@@ -2,6 +2,10 @@
 #include 'data/scripts/libs/email.evil'
 #include 'data/scripts/satania/libs/animations.evil'
 
+CHECK_EMAIL_INTERVAL = 300000 // 5 minutes
+CHECK_REMINDER_INTERVAL = 600000 // 10 minutes
+CHECK_WEATHER_INTERVAL = 600000 // 10 minutes
+
 if is_silent
   scheme_load('main-silent.evil')
 
@@ -40,8 +44,8 @@ while true {
       wait(5)
     }
   }
-  // Check for emails every 5 minutes
-  if (email_imap_is_configured = true) & (ticks - email_delay >= 300000) {
+  // Check for emails
+  if (email_imap_is_configured = true) & (ticks - email_delay >= CHECK_EMAIL_INTERVAL) {
     set('email_delay', ticks)
     anim_read_begin()
     email_notify(false)
@@ -49,16 +53,16 @@ while true {
     scheme_load(scheme_default)
   }
 
-  // Check for weather every 10 minutes
+  // Check for weather
   weather_delay = get('weather_delay')
-  if (weather_delay = '') | (ticks - weather_delay >= 600000) {
+  if (weather_delay = '') | (ticks - weather_delay >= CHECK_WEATHER_INTERVAL) {
     set('weather_delay', ticks)
     scheme_load('menu/Weather.evil')
   }
 
-  // Check for reminder every 10 minutes
+  // Check for reminder
   reminder_delay = get('reminder_delay')
-  if (reminder_delay = '') | (ticks - reminder_delay >= 600000) {
+  if (reminder_delay = '') | (ticks - reminder_delay >= CHECK_REMINDER_INTERVAL) {
     set('reminder_delay', ticks)
     reminder_check(false)
     scheme_load(scheme_default)
