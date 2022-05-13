@@ -3,8 +3,7 @@ fn reminder_check(is_zero_notify) {
 
   if length(reminders) > 0 {
     s = 'There are things you need to do today at:\n\n';
-    for i = 0 to length(reminders) - 1 {
-      t = reminders[i]
+    for t in reminders {
       s = s + string_format('- <font color="#ff0000">{0}h{1}m</font>\n\n', [t[0], t[1]])
     }
     talk(s)
