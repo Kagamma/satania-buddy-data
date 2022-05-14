@@ -1,6 +1,0 @@
-sprite_load('idle/skeleton.x3dv')
-sprite_scale_set(0.1)
-sprite_animation_play('btfo_talk', false)
-talk('Lewd...')
-wait(1)
-process_run('hydrus-client')
