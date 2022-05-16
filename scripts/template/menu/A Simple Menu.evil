@@ -1,4 +1,4 @@
 talk('Hi!
-I am Nobeta.
+I am ' + name + '.
 This is just a simple template to help you create your own character.
 Please check <font color="#0000ff">Help -> Create New Character</font> for more information.')
