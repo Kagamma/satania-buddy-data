@@ -46,7 +46,6 @@
             "$Children" : [
               {
                 "$$ClassName" : "TCastleScene",
-                "AutoAnimationLoop" : false,
                 "ExposeTransforms" : [
                 ],
                 "Name" : "Sprite",
@@ -70,6 +69,12 @@
                   "Y" : 2.1200000000000000E+002
                 },
                 "URL" : "castle-data:/sprites/satania/idle/skeleton.x3dv"
+              },
+              {
+                "$$ClassName" : "TCastleSpine",
+                "ExposeTransforms" : [
+                ],
+                "Name" : "Spine"
               }
             ]
           }
@@ -126,7 +131,8 @@
               "TypingSpeed" : 2.4000000000000000E+001,
               "VerticalAlignment" : "vpTop",
               "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop"
+              "VerticalAnchorSelf" : "vpTop",
+              "WordWrap" : false
             }
           ]
         }
