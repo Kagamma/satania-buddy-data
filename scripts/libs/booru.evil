@@ -1,0 +1,54 @@
+fn safebooru_display_random_image(title, tags) {
+  tags_combine = ''
+  for tag in tags {
+    tag = string_replace(tag, ' ', '_')
+    tags_combine += tag + '+'
+  }
+  while true {
+    booru = http_fetch('GET', 'https://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1&pid=2&tags=' + tags_combine, [], null)
+    while http_is_success(booru) = false yield
+    html = http_result_get(booru).data
+
+    count = number(http_query(html, '/posts/@count')[0])
+
+    booru = http_fetch('GET', 'https://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1&pid=2&tags=' + tags_combine + '&pid=' + string(random(count)), [], null)
+    while http_is_success(booru) = false yield
+    html = http_result_get(booru).data
+
+    page_id = http_query(html, '/posts/post/@id')[0]
+    image_url = http_query(html, '/posts/post/@sample_url')[0]
+    page_url = 'https://safebooru.org/index.php?page=post&s=view&id=' + string(page_id)
+
+    ask(title, '
+    <div>
+      <div style="text-align:center">
+        <span>
+          <a href="_close">Close</a>
+          <a href="' + page_url + '">View in browser</a>
+          <a href="Random">Random</a>
+        </span>
+      </div>
+      <div style="text-align:center">
+        <img style="max-width:100%" src="' + image_url + '" />
+      </div>
+      <div style="text-align:center">
+        <span>
+          <a href="_close">Close</a>
+          <a href="' + page_url + '">View in browser</a>
+          <a href="Random">Random</a>
+        </span>
+      </div>
+    </div>
+    ', 540, 540)
+
+    s = answer()
+    if s = "_close"
+      break
+    else
+    if s != "Random" {
+      http_open(s)
+      break
+    }
+  }
+}
+

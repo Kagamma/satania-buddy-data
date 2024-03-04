@@ -1,0 +1,544 @@
+html {
+  --color-text: #eee;
+  --color-background: rgb(0, 0, 0, 0.7);
+  --color-name-text: lightblue;
+  --color-asterisk-text: gray;
+  --color-round-bracket-text: gray;
+  --color-double-quote-text: yellowgreen;
+  --color-code-text: #d0d0d0;
+  --color-code-background: rgb(32, 48, 64, 0.9);
+  --color-modal-text: eee;
+  --color-modal-background: #444;
+  --color-input-text: #eee;
+  --color-input-background: rgb(0, 0, 0, 0.7);
+  --color-btn-primary: #fff;
+  --color-btn-secondary: #fff;
+  --color-btn-success: #fff;
+  --color-btn-danger: #fff;
+  --color-btn-warning: #000;
+  --color-btn-info: #000;
+  --color-btn-primary-background: #0b5ed7;
+  --color-btn-secondary-background: #798085;
+  --color-btn-success-background: #198754;
+  --color-btn-danger-background: #bb2d3b;
+  --color-btn-warning-background: #ffc107;
+  --color-btn-info-background: #31d2f2;
+  --color-btn-outline-primary-background: #0b5ed7;
+  --color-btn-outline-secondary-background: #798085;
+  --color-btn-outline-success-background: #198754;
+  --color-btn-outline-danger-background: #bb2d3b;
+  --color-btn-outline-warning-background: #ffc107;
+  --color-btn-outline-info-background: #31d2f2;
+  --border-input: 1px solid rgb(0, 0, 0, 0.7);
+  --border-table: 1px solid rgb(128, 128, 128, 0.7);
+  --color-background-gradient: linear-gradient(to right top, #4d3955 0%, #3a596d 100%);
+  --border-avatar: 0px solid white;
+  --border-message: 0px solid white;
+  --transform-avatar: translateY(0);
+  --font-family: Arial, Helvetica, sans-serif;
+  --font-size: medium;
+  --font-weight-username: normal;
+  --font-style-asterisk-text: italic;
+  --font-style-round-bracket-text: italic;
+  --font-style-double-quote-text: normal;
+  --line-height: 1.5;
+}
+
+html.light-mode {
+  --color-text: #111;
+  --color-background: rgb(255, 255, 255, 0.7);
+  --color-name-text: rgb(31, 61, 107);
+  --color-asterisk-text: gray;
+  --color-round-bracket-text: gray;
+  --color-double-quote-text: rgb(138, 106, 0);
+  --color-code-text: #d0d0d0;
+  --color-code-background: rgb(32, 48, 64, 0.9);
+  --color-modal-text: black;
+  --color-modal-background: white;
+  --color-input-text: #111;
+  --color-input-background: rgb(255, 255, 255, 0.7);
+  --border-input: 1px solid #888;
+  --border-table: 1px solid rgba(136, 136, 136, 0.7);
+  --color-background-gradient: linear-gradient(to right top, #ccc 0%, #eee 100%);
+  --border-avatar: 1px solid #888;
+  --border-message: 1px solid #888;
+  --transform-avatar: translateY(1.5px);
+}
+
+html.hacker-mode {
+  --color-text: lightgreen;
+  --color-background: #0c0c0c;
+  --color-name-text: lightgreen;
+  --color-asterisk-text: rgb(0, 184, 184);
+  --color-round-bracket-text: rgb(0, 184, 184);
+  --color-double-quote-text: #eee;
+  --color-code-text: #d0d0d0;
+  --color-code-background: rgb(32, 48, 64, 0.9);
+  --color-modal-text: lightgreen;
+  --color-modal-background: #444;
+  --color-input-text: lightgreen;
+  --color-input-background: black;
+  --color-btn-primary: #000;
+  --color-btn-secondary: #fff;
+  --color-btn-success: #000;
+  --color-btn-danger: #000;
+  --color-btn-warning: #000;
+  --color-btn-info: #000;
+  --color-btn-primary-background: lightgreen;
+  --color-btn-secondary-background: green;
+  --color-btn-success-background: lightgreen;
+  --color-btn-danger-background: #bb2d3b;
+  --color-btn-warning-background: #ffc107;
+  --color-btn-info-background: lightgreen;
+  --color-btn-outline-primary-background: lightgreen;
+  --color-btn-outline-secondary-background: green;
+  --color-btn-outline-success-background: lightgreen;
+  --color-btn-outline-danger-background: #bb2d3b;
+  --color-btn-outline-warning-background: #ffc107;
+  --color-btn-outline-info-background: lightgreen;
+  --border-input: 1px solid lightgreen;
+  --border-table: 1px solid rgba(144, 238, 144, 0.7);
+  --color-background-gradient: linear-gradient(to right top, #111 0%, #222 100%);
+  --border-avatar: 1px solid lightgreen;
+  --border-message: 1px solid lightgreen;
+  --transform-avatar: translateY(1.5px);
+  --font-family: 'Courier New', Courier, monospace;
+}
+
+html.yotsuba-mode {
+  --color-text: maroon;
+  --color-background: #f0e0d6;
+  --color-name-text: #117743;
+  --color-asterisk-text: #789922;
+  --color-round-bracket-text: #789922;
+  --color-double-quote-text: #789922;
+  --color-code-text: #d0d0d0;
+  --color-code-background: rgb(32, 48, 64, 0.9);
+  --color-modal-text: #fff;
+  --color-modal-background: #178CC8;
+  --color-input-text: #000;
+  --color-input-background: #FFF;
+  --color-btn-primary: #000;
+  --color-btn-secondary: #000;
+  --color-btn-success: #000;
+  --color-btn-danger: #fff;
+  --color-btn-warning: #000;
+  --color-btn-info: #000;
+  --color-btn-primary-background: #E9E9ED;
+  --color-btn-secondary-background: #E9E9ED;
+  --color-btn-success-background: #E9E9ED;
+  --color-btn-danger-background: #bb2d3b;
+  --color-btn-warning-background: #E9E9ED;
+  --color-btn-info-background: #E9E9ED;
+  --color-btn-outline-primary-background: #b6b6b6;
+  --color-btn-outline-secondary-background: #b6b6b6;
+  --color-btn-outline-success-background: #b6b6b6;
+  --color-btn-outline-danger-background: #bb2d3b;
+  --color-btn-outline-warning-background: #b6b6b6;
+  --color-btn-outline-info-background: #b6b6b6;
+  --border-input: 1px solid #d9bfb7;
+  --border-table: 1px solid #d9bfb7;
+  --color-background-gradient: linear-gradient(to right top, #FFFFEE 0%, #FFFFEE 100%);
+  --border-avatar: 1px solid #d9bfb7;
+  --border-message: 1px solid #d9bfb7;
+  --transform-avatar: translateY(1.5px);
+  --font-weight-username: bold;
+  --font-size: 10pt;
+  --font-style-asterisk-text: normal;
+  --font-style-round-bracket-text: normal;
+  --line-height: 1.2;
+}
+
+html.yotsuba-b-mode {
+  --color-text: #000;
+  --color-background: #d6daf0;
+  --color-name-text: #117743;
+  --color-asterisk-text: #789922;
+  --color-round-bracket-text: #789922;
+  --color-double-quote-text: #789922;
+  --color-code-text: #d0d0d0;
+  --color-code-background: rgb(32, 48, 64, 0.9);
+  --color-modal-text: #fff;
+  --color-modal-background: #178CC8;
+  --color-input-text: #000;
+  --color-input-background: #FFF;
+  --color-btn-primary: #000;
+  --color-btn-secondary: #000;
+  --color-btn-success: #000;
+  --color-btn-danger: #fff;
+  --color-btn-warning: #000;
+  --color-btn-info: #000;
+  --color-btn-primary-background: #E9E9ED;
+  --color-btn-secondary-background: #E9E9ED;
+  --color-btn-success-background: #E9E9ED;
+  --color-btn-danger-background: #bb2d3b;
+  --color-btn-warning-background: #E9E9ED;
+  --color-btn-info-background: #E9E9ED;
+  --color-btn-outline-primary-background: #b6b6b6;
+  --color-btn-outline-secondary-background: #b6b6b6;
+  --color-btn-outline-success-background: #b6b6b6;
+  --color-btn-outline-danger-background: #bb2d3b;
+  --color-btn-outline-warning-background: #b6b6b6;
+  --color-btn-outline-info-background: #b6b6b6;
+  --border-input: 1px solid #b7c5d9;
+  --border-table: 1px solid #b7c5d9;
+  --color-background-gradient: linear-gradient(to right top, #EEF2FF 0%, #EEF2FF 100%);
+  --border-avatar: 1px solid #b7c5d9;
+  --border-message: 1px solid #b7c5d9;
+  --transform-avatar: translateY(1.5px);
+  --font-weight-username: bold;
+  --font-size: 10pt;
+  --font-style-asterisk-text: normal;
+  --font-style-round-bracket-text: normal;
+  --line-height: 1.2;
+}
+
+* {
+  font-family: var(--font-family);
+}
+
+textarea, input, div, span, pre, table {
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+}
+
+*,*:focus,*:hover{
+  outline: none;
+}
+
+pre {
+  color: var(--color-code-text) !important;
+  background:var(--color-code-background);
+  margin: 8px;
+  padding: 8px;
+  border-radius: 5px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95em !important;
+  white-space: pre-wrap;
+}
+  pre * {
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+select {
+  color: var(--color-text) !important;
+  background:var(--color-background) !important;
+  border: var(--border-input);
+  border-radius: 5px;
+}
+  select:focus {
+    border: var(--border-input);
+    opacity: 0.75;
+  }
+  select::selection {
+    border: var(--border-input);
+    opacity: 0.75;
+  }
+
+textarea {
+  color: var(--color-input-text);
+  background: var(--color-input-background);
+  border: var(--border-input);
+}
+
+input {
+  color: var(--color-input-text) !important;
+  background: var(--color-input-background) !important;
+  border: var(--border-input) !important;
+}
+
+.table {
+  margin-top: 8px;
+}
+.table, .th, .td {
+  padding: 8px;
+  vertical-align: top;
+  color: var(--color-input-text) !important;
+  background: var(--color-input-background) !important;
+  border: var(--border-table) !important;
+}
+
+.w-10 {
+  width: 10% !important;
+}
+.w-20 {
+  width: 20% !important;
+}
+.w-30 {
+  width: 30% !important;
+}
+.w-40 {
+  width: 40% !important;
+}
+
+.btn:hover {
+  opacity: 0.75;
+}
+.btn-primary {
+  color: var(--color-btn-primary) !important;
+  background: var(--color-btn-primary-background) !important;
+}
+.btn-secondary {
+  color: var(--color-btn-secondary) !important;
+  background: var(--color-btn-secondary-background) !important;
+}
+.btn-success {
+  color: var(--color-btn-success) !important;
+  background: var(--color-btn-success-background) !important;
+}
+.btn-danger {
+  color: var(--color-btn-danger) !important;
+  background: var(--color-btn-danger-background) !important;
+}
+.btn-warning {
+  color: var(--color-btn-warning) !important;
+  background: var(--color-btn-warning-background) !important;
+}
+.btn-info {
+  color: var(--color-btn-info) !important;
+  background: var(--color-btn-info-background) !important;
+}
+  .btn-outline-primary {
+    color: var(--color-btn-outline-primary-background) !important;
+    border-color: var(--color-btn-outline-primary-background) !important;
+    background: rgb(0, 0, 0, 0) !important;
+  }
+  .btn-outline-secondary {
+    color: var(--color-btn-outline-secondary-background) !important;
+    border-color: var(--color-btn-outline-secondary-background) !important;
+    background: rgb(0, 0, 0, 0) !important;
+  }
+  .btn-outline-success {
+    color: var(--color-btn-outline-success-background) !important;
+    border-color: var(--color-btn-outline-success-background) !important;
+    background: rgb(0, 0, 0, 0) !important;
+  }
+  .btn-outline-danger {
+    color: var(--color-btn-outline-danger-background) !important;
+    border-color: var(--color-btn-outline-danger-background) !important;
+    background: rgb(0, 0, 0, 0) !important;
+  }
+  .btn-outline-warning {
+    color: var(--color-btn-outline-warning-background) !important;
+    border-color: var(--color-btn-outline-warning-background) !important;
+    background: rgb(0, 0, 0, 0) !important;
+  }
+  .btn-outline-info {
+    color: var(--color-btn-outline-info-background) !important;
+    border-color: var(--color-btn-outline-info-background) !important;
+    background: rgb(0, 0, 0, 0) !important;
+  }
+
+.no-border {
+  border-width: 0 !important;
+}
+
+.modal {
+  color: var(--color-modal-text);
+  background: rgb(0, 0, 0, 0.65);
+  display: block;
+}
+
+.text {
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+.modal-content {
+  color: var(--color-modal-text);
+  background: var(--color-modal-background);
+}
+
+.loading {
+  background-image: var(--color-background-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  font-family: 'Arial';
+  background-image: var(--color-background-gradient);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+  .app-content {
+    width: 100%;
+    height: calc(100% - 32px);
+    padding: 8px;
+    display: flex;
+    flex-direction: row;
+  }
+  .app-content-sub {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+  .app-commands {
+    width: 100%;
+    height: 32px;
+    padding: 0 0 8px 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+    .app-commands-left {
+      display: flex;
+    }
+    .app-commands-right {
+      display: flex;
+    }
+
+.chat-container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--color-text);
+}
+
+.chat-messages-container {
+  height: calc(100% - 160px);
+  overflow-y: scroll;
+}
+
+.chat-item-container {
+  display: flex;
+}
+  .chat-item-avatar-container {
+    width: 72px;
+    align-self: baseline;
+    background: var(--color-background);
+    border-radius: 8px;
+    margin: 8px;
+    padding: 4px;
+    border: var(--border-avatar);
+  }
+  .chat-item-text-container {
+    color: var(--color-text);
+    width: calc(100% - 72px);
+  }
+    .chat-item-name-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+      .chat-item-name {
+        color: var(--color-text);
+        width: fit-content;
+        background: var(--color-background);
+        border-radius: 8px 32px 0 0;
+        margin: 8px 8px 0 8px;
+        padding: 8px 16px 0 8px;
+        color: var(--color-name-text);
+        border: var(--border-message);
+        border-bottom-style: solid;
+        border-bottom-color: var(--color-background);
+        transform: var(--transform-avatar);
+        font-weight: var(--font-weight-username);
+        z-index: 1;
+      }
+      .chat-item-commands-container {
+        display: flex;
+        align-self: baseline;
+        margin: 8px 8px 0 8px;
+        padding-top: 4px;
+      }
+    .chat-item-message-container {
+      color: var(--color-text);
+      background: var(--color-background);
+      border-radius: 0 0 8px 8px;
+      margin: 0px 8px 8px 8px;
+      padding: 8px;
+      min-height: 42px;
+      border: var(--border-message);
+    }
+      .chat-item-message {
+        color: var(--color-name-text);
+      }
+      .chat-item-message-asterisk {
+        font-style: var(--font-style-asterisk-text);
+        color: var(--color-asterisk-text);
+      }
+      .chat-item-message-round-bracket {
+        font-style: var(--font-style-round-bracket-text);
+        color: var(--color-round-bracket-text);
+      }
+      .chat-item-message-double-quote {
+        font-style: var(--font-style-double-quote-text);
+        color: var(--color-double-quote-text);
+      }
+      .chat-item-message-typing {
+        font-style: italic;
+        color: var(--color-text);
+      }
+
+.chat-input-container {
+  height: 160px;
+  padding-top: 4px;
+}
+  .chat-input {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+  }
+
+.history-input {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.chat-item-input {
+  width: 100%;
+  min-height: 400px;
+  height: fit-content;
+  border-radius: 5px;
+}
+
+.sidebar-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 450px;
+  height: 100%;
+  color: var(--color-text);
+  background: var(--color-background);
+  border-left: var(--border-input);
+  z-index: 1001;
+  padding: 8px;
+  margin-left: 8px;
+  margin-right: -8px;
+}
+  .sidebar-right-slider-container {
+    width: 100%;
+    overflow-y: auto;
+  }
+
+.sidebar-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 450px;
+  height: 100%;
+  color: var(--color-text);
+  background: var(--color-background);
+  border-right: var(--border-input);
+  z-index: 1001;
+  padding: 8px;
+  margin-left: -8px;
+  margin-right: 8px;
+}
+  .sidebar-left-session-container {
+    width: 100%;
+    height: calc(100% - 150px);
+    overflow-y: auto;
+  }

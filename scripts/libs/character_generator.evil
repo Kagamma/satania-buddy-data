@@ -1,0 +1,235 @@
+fn ai_character_extract_from_memory_png(data) {
+  has_chara = false
+  json = null
+  // Look for EXtchara symbol...
+  i = 7
+  while (i < buffer_length(data)) && (i < 1024) {
+    if (chr(buffer_u8_get(data + i - 2)) = 'a') &&
+       (chr(buffer_u8_get(data + i - 3)) = 'r') &&
+       (chr(buffer_u8_get(data + i - 4)) = 'a') &&
+       (chr(buffer_u8_get(data + i - 5)) = 'h') &&
+       (chr(buffer_u8_get(data + i - 6)) = 'c') {
+      has_chara = true
+      break
+    }
+    i += 1
+  }
+  if has_chara {
+    encode_text = ''
+    old_value = ''
+    while i < buffer_length(data) {
+      val = buffer_u8_get(data + i)
+      if ((val >= ord('A')) && (val <= ord('z'))) ||
+         ((val >= ord('0')) && (val <= ord('9'))) ||
+         (val = ord('+')) ||
+         (val = ord('/')) ||
+         (val = ord('=')) {
+        value = chr(val)
+        string_concat(encode_text, encode_text, value)
+        i += 1
+      } else {
+        break
+      }
+    }
+    json_str = base64_decode(encode_text)
+    if (length(json_str) > 0) {
+      json_str = string_trim(json_str)
+      if ((json_str[0] == '[') || (json_str[0] == '{')) {
+        json = json_parse(json_str)
+        if (json.data != null) {
+          // This is a v2 card
+          if (json.spec == 'chara_card_v2') {
+            data = json.data
+            json.char_name = data.name
+            json.char_persona = ''
+            json.world_scenario = data.scenario
+            json.example_dialogue = data.mes_example
+            json.greeting = data.first_mes
+            json.alternate_greetings = data.alternate_greetings
+            json.lorebook = data.character_book
+          } else {
+            throw 'Unrecognized character card version!';
+          }
+        } else {
+          // This is a v1 card
+          json.char_name = json.name
+          json.char_persona = ''
+          json.world_scenario = json.scenario
+          json.example_dialogue = json.mes_example
+          json.greeting = json.first_mes
+        }
+      }
+    }
+  }
+  result = json
+}
+
+fn ai_character_extract_from_file(filename) {
+  json = null
+  is_png = string_find(string_lowercase(filename), '.png') >= 0
+  if (string_find(string_lowercase(filename), '.json') >= 0) || is_png {
+    if is_png {
+      data = fs_file_read_binary(filename)
+      json = ai_character_extract_from_memory_png(data)
+    } else {
+      json_str = fs_file_read_text(filename)
+      json = json_parse(json_str)
+    }
+  }
+  result = json
+}
+
+fn ai_character_service_generator(json, service, path) {
+  content = ''
+
+  char_name = string_replace(json.char_name, '"', '\\"')
+  char_persona = string_replace(json.char_persona, '"', '\\"')
+  personality = string_replace(json.personality, '"', '\\"')
+  world_scenario = string_replace(string(json.world_scenario) + string(json.description), '"', '\\"')
+  example_dialogue = string_replace(json.example_dialogue, '"', '\\"')
+  greeting = string_replace(json.greeting, '"', '\\"')
+
+  if (service == 'oobabooga') {
+    content =
+"using 'data/scripts/libs/oobabooga.evil'
+
+// This function is executed by chat window, to read greeting string
+// Note that it cannot read other global variables's default values
+fn _greeting() {
+  return (\"${char_name}: ${greeting}\")
+}
+
+description = [
+  token_start: '<|im_start|>',
+  token_end: '<|im_end|>',
+  charname: \"${char_name}\",
+  persona: \"${char_persona}\",
+  personality: \"${personality}\",
+  scenario: \"${world_scenario}\",
+  example_dialogue: \"${example_dialogue}\",
+  reminder: '\\n### Next is ${char_name}\\'s response. Stay in character, ${char_name} must put expressiveness, actions, and thoughts in asterisks. Do not reply as ' + username + '.\\n',
+  greeting: \"<|im_start|>\" + _greeting() + \"<|im_end|>\",
+]
+
+api = 'http://localhost:5000/v1/completions'
+
+settings = [
+  'max_tokens': 8192,
+  'temperature': 0.65,
+  'frequency_penalty': 0,
+  'presence_penalty': 0,
+  'top_p': 0.7,
+]
+
+stoppers = []
+
+// Load settings from local flag. Make sure the flag has the same name as this file
+settings = oobabooga_settings_from_local_flag('oobabooga', settings)
+if settings.server != null {
+  api = settings.server + '/v1/completions'
+}
+
+tgw_request([
+ api: api,
+ settings: settings,
+ charname: '" + json.char_name + "',
+ stoppers: stoppers,
+ description: description
+])"
+  } else {
+    content =
+"using 'data/scripts/libs/koboldcpp.evil'
+
+// This function is executed by chat window, to read greeting string
+// Note that it cannot read other global variables's default values
+fn _greeting() {
+  return (\"${char_name}: ${greeting}\")
+}
+
+description = [
+  token_start: '<|im_start|>',
+  token_end: '<|im_end|>',
+  charname: \"${char_name}\",
+  persona: \"${char_persona}\",
+  personality: \"${personality}\",
+  scenario: \"${world_scenario}\",
+  example_dialogue: \"${example_dialogue}\",
+  reminder: '\\n### Next is ${char_name}\\'s response. Stay in character, ${char_name} must put expressiveness, actions, and thoughts in asterisks. Do not reply as ' + username + '.\\n',
+  greeting: \"<|im_start|>\" + _greeting() + \"<|im_end|>\",
+]
+
+api = 'http://localhost:5001/api/v1/generate'
+
+settings = [
+  'n': 1,
+  'max_length': 8192,
+  'rep_pen': 1.18,
+  'temperature': 0.65,
+  'top_p': 0.47,
+  'top_k': 42,
+  'top_a': 0,
+  'typical': 1,
+  'tfs': 1,
+  'rep_pen_range': 1024,
+  'rep_pen_slope': 0.7,
+  'sampler_order': [6, 0, 1, 3, 4, 2, 5],
+  'quiet': true,
+]
+
+stoppers = []
+
+// Load settings from local flag. Make sure the flag has the same name as this file
+settings = koboldcpp_settings_from_local_flag('koboldcpp.evil', settings)
+if settings.server != null {
+  api = settings.server + '/api/v1/generate'
+}
+
+koboldcpp_request([
+ api: api,
+ settings: settings,
+ stoppers: stoppers,
+ description: description
+])"
+  }
+  fs_file_delete(path)
+  fs_file_write_text(path, content)
+}
+
+/**
+ * Create a completely new character from character card
+ * @json: character json taken from character card (see drag_drop.evil)
+ * @avatar: null, or string if character card is a PNG file
+ */
+fn ai_character_generator(json, avatar) {
+  char_name = json.char_name
+  //
+  path_script_template = 'data/scripts/template'
+  path_sprite_template = 'data/sprites/template'
+  path_script = fs_directory_config_get() + 'data/scripts/' + char_name
+  path_sprite = fs_directory_config_get() + 'data/sprites/' + char_name
+  // Generate directories
+  fs_directory_create(path_script)
+  fs_directory_create(path_sprite)
+  fs_directory_create(path_script + '/menu')
+  fs_directory_create(path_script + '/services')
+  fs_directory_create(path_script + '/system')
+  // Copy data from template to this
+  fs_file_copy(path_script_template + '/main.evil', path_script + '/main.evil')
+  fs_file_copy(path_script_template + '/menu/A Simple Menu.evil', path_script + '/menu/A Simple Menu.evil')
+  fs_file_copy(path_script_template + '/services/ChatGPT.evil', path_script + '/services/ChatGPT.evil')
+  fs_file_copy(path_script_template + '/services/WolframAlpha.evil', path_script + '/services/WolframAlpha.evil')
+  fs_file_copy(path_script_template + '/system/drop-files.evil', path_script + '/system/drop-files.evil')
+  fs_file_copy(path_sprite_template + '/sprites.plist', path_sprite + '/sprites.plist')
+  fs_file_copy(path_sprite_template + '/sprites.png', path_sprite + '/sprites.png')
+  // Create a new meta
+  fs_file_delete(path_script + '/meta.json')
+  fs_file_write_text(path_script + '/meta.json', json_stringify([ name: char_name ]))
+  // Copy avatar file
+  if (avatar != null) {
+    fs_file_copy(avatar, path_sprite + '/avatar.png')
+  }
+  // Generate services
+  ai_character_service_generator(json, 'oobabooga', path_script + '/services/oobabooga.evil')
+  ai_character_service_generator(json, 'koboldcpp', path_script + '/services/koboldcpp.evil')
+}
+

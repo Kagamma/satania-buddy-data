@@ -1,0 +1,24 @@
+if is_sow() {
+  sprite_load('sit/skeleton.x3dv')
+  sprite_scale_set(0.1)
+  sprite_animation_play('idle_1', true)
+  sprite_animation_play('blink_loop', true)
+  talk('iToddlers BTFO!!!')
+} else {
+  sprite_load('idle/skeleton.x3dv')
+  sprite_scale_set(0.1)
+  sprite_animation_play('btfo_talk', false)
+  talk('iToddlers BTFO!!!')
+  wait(1)
+  sprite_animation_play('btfo_talk_to_laugh', false)
+  while sprite_animation_is_playing('btfo_talk_to_laugh')
+    yield
+  wait(0.2)
+  sprite_animation_play('btfo_laugh', true)
+  wait(5)
+  sprite_animation_stop('btfo_laugh')
+  sprite_animation_play('btfo_laugh_to_talk', false)
+  while sprite_animation_is_playing('btfo_laugh_to_talk')
+    yield
+}
+

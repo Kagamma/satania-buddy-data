@@ -1,0 +1,7 @@
+using 'data/scripts/libs/4chan.evil'
+using 'libs/animations.evil'
+
+anim_idle()
+fourchan_display_archive('g')
+
+

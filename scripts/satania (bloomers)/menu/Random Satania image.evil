@@ -1,0 +1,4 @@
+using 'data/scripts/libs/booru.evil'
+
+safebooru_display_random_image('Satania', ['kurumizawa_satanichia_mcdowell'])
+

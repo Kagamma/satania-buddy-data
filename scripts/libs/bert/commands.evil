@@ -1,0 +1,149 @@
+using 'data/scripts/libs/bert/bert.evil'
+using 'data/scripts/libs/ggml/ggml.evil'
+
+/**
+ * Check if text is part of rule, automatically execute rule via scheme_execute() if matched.
+ */
+fn commands_check(text) {
+  // Evaluate
+  fn eval(r_ctx, emb_raw, text) {
+    bert_tokenize(r_ctx.bert_ctx, text, r_ctx.tokens, r_ctx.n_tokens, r_ctx.N)
+    bert_eval(r_ctx.bert_ctx, 3, r_ctx.tokens, buffer_i32_get(r_ctx.n_tokens), emb_raw)
+  }
+
+  // Find cosine similarity between 2 embeddings
+  fn similarity(ctx, gf, v1, v2) {
+    v = ggml_div(ctx,
+          ggml_sum(ctx,
+            ggml_mul(ctx, v1, v2)),
+          ggml_mul(ctx,
+            ggml_sqrt(ctx, ggml_sum(ctx, ggml_sqr(ctx, v1))),
+            ggml_sqrt(ctx, ggml_sum(ctx, ggml_sqr(ctx, v2)))))
+    ggml_build_forward_expand(gf, v)
+    ggml_graph_compute_with_ctx(ctx, gf, 1)
+    result = ggml_get_f32_1d(v, 0)
+  }
+  //
+  if !is_commands() {
+    return (false)
+  }
+
+  //
+  res = [
+    score: -1,
+  ]
+
+  ctx = get('_commands_ctx')
+  if ctx == null {
+    ctx = []                   
+    // Load bert
+    ctx.bert_ctx = get('_bert_ctx')
+    if !ctx.bert_ctx {
+      ctx.bert_ctx = bert_load_from_file(BERT_MODEL)
+      set('_bert_ctx', ctx.bert_ctx)
+    }
+    // Init ggml memory
+    ctx.ggml_mem = buffer_create(1024 * 1024 * 8)
+    params = buffer_create(ggml_init_params_t.SIZE)
+    buffer_u64_set(params + ggml_init_params_t.mem_size, buffer_length(ctx.ggml_mem))
+    buffer_u64_set(params + ggml_init_params_t.mem_buffer, ctx.ggml_mem)
+    buffer_u64_set(params + ggml_init_params_t.no_alloc, 0)
+    ctx.ggml_params = params
+    ctx.N = bert_n_max_tokens(ctx.bert_ctx) * 4
+    ctx.E = bert_n_embd(ctx.bert_ctx)
+    ctx.E_bytes = ctx.E * 4
+    ctx.tokens = buffer_create(ctx.N)
+    ctx.n_tokens = buffer_create(4)
+
+    set('_commands_ctx', ctx)
+  }
+
+  commands_path = fs_directory_config_get() + 'data/scripts/' + character + '/commands.json'
+  if !fs_file_exists(commands_path) {
+    // Try to load default commands if any
+    commands_path = 'data/scripts/' + character + '/commands.json'
+    if !fs_file_exists(commands_path) {
+      return (false)
+    }
+  }
+  last_modified = fs_file_age_get(commands_path)
+
+  // TODO: We get funny crash if we dont init ggml_ctx here.
+  // There must be a bug somewhere in evil script code generator
+  ggml_ctx = ggml_init(ctx.ggml_params)
+
+  // We reload bert embeddings if last_modified changed, or when we change character
+  if (last_modified != ctx.last_modified) ||
+     (commands_path != ctx.commands_path) {
+    ctx.commands = json_parse(fs_file_read_text(commands_path))
+
+    // Find embeddings for patterns
+    for rule in ctx.commands {
+      embs = []
+      // Make sure to remove blank patterns
+      for i = length(rule.patterns) - 1 downto 0 {
+        if (rule.patterns[i] == '') {
+          map_key_delete(rule.patterns, i)
+        }
+      }
+      for pattern in rule.patterns {
+        emb = buffer_create(ctx.E_bytes)
+        eval(ctx, emb, pattern)
+        embs[length(embs)] = emb
+      }
+      rule.embeddings = embs
+    }
+
+    ctx.last_modified = last_modified
+    ctx.commands_path = commands_path
+  }
+
+  gf = ggml_new_graph(ggml_ctx)
+  emb_text = ggml_new_tensor_1d(ggml_ctx, GGML_TYPE_F32, ctx.E)
+  emb_check = ggml_new_tensor_1d(ggml_ctx, GGML_TYPE_F32, ctx.E)
+  // Find text embedding
+  eval(ctx, ggml_get_data(emb_text), text)
+  // Check text embedding against other rule embeddings
+  for rule in ctx.commands {
+    if rule.enable == true {
+      for emb, index in rule.embeddings {
+        buffer_copy(ggml_get_data(emb_check), emb, ctx.E_bytes)
+        score = similarity(ggml_ctx, gf, emb_text, emb_check)
+        if res.score < score {
+          res.score = score
+          res.rule = rule
+          res.pattern = rule.patterns[index]
+          res.confirmation = rule.confirmation
+        }
+      }
+    }
+  }
+  ggml_free(ggml_ctx)
+  if res.score >= res.rule.similarity_score {
+    // Yes/No
+    chat = ''
+    if res.confirmation {
+      chat_mode_set(CHATMODE_SCRIPT)
+      stream_enable()
+      stream('"${res.pattern}", is this what you are asking me to do? Please answer with "Yes" or "No".')
+      stream_disable()
+      chat = string_lowercase(chat_result_get())
+      while length(string_grep(chat, ['yes', 'yeah', 'right', 'wrong', 'no', 'nope'])) = 0 {
+        chat = string_lowercase(chat_result_get())
+        yield
+      }
+      chat_mode_set(CHATMODE_CHAT)
+    }
+    if !res.confirmation || (length(string_grep(chat, ['yes', 'yeah', 'right'])) > 0) {
+      scheme_execute(res.rule.response)
+    } else {
+      stream_enable()
+      stream('Ok I won\'t do it.')
+      stream_disable()
+    }
+    return (true)
+  }
+  chat_mode_set(CHATMODE_CHAT)
+  return (false)
+}
+

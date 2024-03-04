@@ -1,0 +1,22 @@
+note = ''
+note_exists = false
+note_path = fs_directory_config_get() + 'note.txt'
+
+if fs_file_exists(note_path) {
+  note = fs_file_read_text(note_path)
+  note_exists = true
+}
+
+ask('Note', '
+<form>
+  <div>
+    <textarea style="width:100%;height:230px" name="note">' + note + '</textarea>
+  </div>
+</form>
+', 350, 250)
+
+ans = answer()
+if note_exists = true {
+  fs_file_delete(note_path)
+}
+fs_file_write_text(note_path, ans.note)

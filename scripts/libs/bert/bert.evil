@@ -1,0 +1,18 @@
+// Evil script bindings for bert.cpp
+
+BERT_MODEL = 'data/nn/bert.cpp/all-MiniLM-L6-v2/ggml-model-q4_0.bin'
+
+// Load from either bert.dll (Windows), or libbert.so (Linux)
+import 'libbert.dll', 'libbert.so' {
+  fn bert_load_from_file(buffer): buffer
+  fn bert_free(buffer): void
+  fn bert_encode(buffer, i32, buffer, buffer): void
+  fn bert_encode_batch(buffer, i32, i32, i32, buffer, buffer): void
+  fn bert_tokenize(buffer, buffer, buffer, buffer, i32): void
+  fn bert_eval(buffer, i32, buffer, i32, buffer): void
+  fn bert_eval_batch(buffer, i32, i32, buffer, buffer, buffer): void
+  fn bert_n_embd(buffer): i32
+  fn bert_n_max_tokens(buffer): i32
+  fn bert_vocab_id_to_token(buffer, i32): buffer
+}
+

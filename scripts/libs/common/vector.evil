@@ -1,0 +1,140 @@
+// Vector
+
+fn vector_create(data) {
+  fn clear() {
+    self.data = []
+    self.length = 0
+  }
+
+  fn push(v) {
+    self.data[self.length] = v
+    self.length += 1
+  }
+
+  fn concat(vector) {
+    // This way we wont create a new instance of self.data
+    for i = vector.length - 1 downto 0 {
+      self.data[self.length + i] = vector.data[i]
+    }
+    self.length += vector.length
+  }
+
+  fn insert(idx, v) {
+    if (idx < self.length) && (idx >= 0) {
+      for i = self.length downto idx + 1 {
+        self.data[i] = self.data[i - 1]
+      }
+      self.data[idx] = v
+      self.length += 1
+    } else
+      throw 'Array boundary exceeded'
+  }
+
+  fn delete(idx) {
+    if (idx < self.length) && (idx >= 0) {
+      map_key_delete(self.data, idx)
+      self.length -= 1
+    } else
+      throw 'Array boundary exceeded'
+  }
+
+  // Returns first element. If vector is empty, returns null.
+  fn first() {
+    if (self.length > 0)
+      result = self.data[0]
+    else
+      result = null
+  }
+
+  // Returns last element. If vector is empty, returns null.
+  fn last() {
+    if (self.length > 0)
+      result = self.data[self.length - 1]
+    else
+      result = null
+  }
+
+  // Delete and returns last item from vector
+  fn pop() {
+    result = self.last()
+    if (self.length > 0) {
+      map_key_delete(self.data, self.length - 1)
+      self.length -= 1
+    }
+  }
+
+  // Find the index of v, if v is not found, returns -1
+  fn index_of(v) {
+    for i = 0 to self.length - 1
+      if v = self.data[i]
+        return (i)
+    return (-1)
+  }
+
+  // Move item from i1 to i2, then delete i1
+  fn move(i2, i1) {
+    if (i1 < self.length) && (i2 < self.length) && (i1 >= 0) && (i2 >= 0) {
+      self.data[i2] = self.data[i1]
+      map_key_delete(self.data, i1)
+      self.length -= 1
+    } else
+      throw 'Array boundary exceeded'
+  }
+
+  // Swap i1 <=> i2
+  fn exchange(i1, i2) {
+    if (i1 < self.length) && (i2 < self.length) && (i1 >= 0) && (i2 >= 0) {
+      tmp = self.data[i1];
+      self.data[i1] = self.data[i2]
+      self.data[i2] = tmp
+    } else
+      throw 'Array boundary exceeded'
+  }
+
+  // Sort. f is function that take 2 params for comparison
+  fn sort(f) {
+    if typeof(f) != 'function'
+      throw 'f is not a function'
+    fn quick(this, f, left, right) {
+      i = left
+      j = right
+      pivot = this.data[floor(left + (right - left) / 2)]
+      while i <= j {
+        while f(this.data[i], pivot)
+          i += 1
+        while f(pivot, this.data[j])
+          j -= 1
+        if i <= j {
+          tmp = this.data[i]
+          this.data[i] = this.data[j]
+          this.data[j] = tmp
+          i += 1
+          j -= 1
+        }
+      }
+      if left < j
+        quick(this, f, left, j)
+      if i < right
+        quick(this, f, i, right)
+    }
+    quick(self, f, 0, self.length - 1)
+  }
+
+  result = [
+    data: data,
+    length: length(data),
+    clear: clear,
+    push: push,
+    concat: concat,
+    insert: insert,
+    delete: delete,
+    first: first,
+    last: last,
+    pop: pop,
+    index_of: index_of,
+    move: move,
+    exchange: exchange,
+    sort: sort,
+  ]
+}
+

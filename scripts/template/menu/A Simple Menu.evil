@@ -1,0 +1,4 @@
+talk('Hi!
+I am ' + charname + '.
+This is just a simple template to help you create your own character.
+Please check Help -> Create New Character for more information.')

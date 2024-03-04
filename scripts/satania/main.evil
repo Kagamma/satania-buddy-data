@@ -1,0 +1,90 @@
+using 'data/scripts/libs/sprites.evil'
+using 'data/scripts/libs/reminder.evil'
+using 'data/scripts/libs/email.evil'
+using 'libs/animations.evil'
+
+CHECK_EMAIL_INTERVAL = 300000 // 5 minutes
+CHECK_REMINDER_INTERVAL = 600000 // 10 minutes
+CHECK_WEATHER_INTERVAL = 600000 // 10 minutes
+
+// Put character on taskbar (windows only)
+if sprite_startup_position_on_taskbar != null
+  sprite_startup_position_on_taskbar()
+
+// Check for emails
+fn check_for_email() {
+  email_delay = get('email_delay')
+  /*if !email_delay {
+    if email_imap_is_configured() = false {
+      set('email_delay', string(ticks()))
+      talk('I can check new emails for you, just configure your mailbox in "Settings".')
+      wait(5)
+    }
+  }*/
+  if (email_imap_is_configured() = true) & (ticks() - email_delay >= CHECK_EMAIL_INTERVAL) {
+    set('email_delay', ticks())
+    anim_read_begin()
+    email_notify()
+    anim_read_end()
+    scheme_load(scheme_default())
+  }
+}
+
+// Check for reminder
+fn check_for_reminder() {
+  reminder_delay = get('reminder_delay')
+  if ticks() - reminder_delay >= CHECK_REMINDER_INTERVAL {
+    set('reminder_delay', ticks())
+    reminder_check(false)
+    scheme_load(scheme_default())
+  }
+}
+
+// Check for weather
+fn check_for_weather() {
+  weather_delay = get('weather_delay')
+  if ticks() - weather_delay >= CHECK_WEATHER_INTERVAL {
+    set('weather_delay', ticks())
+    scheme_load('menu/Weather.evil')
+  }
+}
+
+// main loop (silent mode)
+if is_silent() {
+  while true {
+    anim_idle()
+    if is_sow()
+      while true yield
+    else
+      wait(60)
+  }
+} else {
+// main loop
+  t = get('main_random')
+  while true {
+    anim_idle()
+    while t > 0 {
+      yield
+      t = t - delta_time()
+    }
+    t = random(30) + 30
+    set('main_random', t)
+
+    // Prevent Satania to check for stuff if speech-to-text is enabled
+    if is_speech_to_text()
+      continue
+
+    check_for_email()
+    check_for_reminder()
+    check_for_weather()
+
+    r = random(100)
+    if (r < 10) & is_lewd() {
+      r2 = random(2)
+      if r2 = 0
+        scheme_load('jump.evil')
+      else
+        scheme_load('lift.evil')
+    }
+  }
+}

@@ -1,0 +1,70 @@
+idle.png
+size:724,396
+filter:Linear,Linear
+pma:true
+scale:0.25
+arm down right
+bounds:657,256,65,138
+arm up right
+bounds:587,196,68,198
+bat
+bounds:460,26,35,34
+blush
+bounds:320,2,138,58
+offsets:2,2,142,62
+buruma
+bounds:2,12,179,80
+offsets:0,1,179,81
+eye ball left
+bounds:499,5,19,23
+eye brow left
+bounds:183,3,37,13
+eye lashes close right
+bounds:361,99,46,10
+eye lashes left
+bounds:320,76,39,33
+eye lashes smile right
+bounds:361,77,43,20
+offsets:0,2,43,22
+eye reflection left
+bounds:222,10,6,6
+gym cloth
+bounds:242,111,170,283
+hair back
+bounds:414,184,171,210
+hair front
+bounds:414,62,116,120
+offsets:0,3,116,123
+hair ring left
+bounds:283,10,35,99
+hair tail left
+bounds:659,76,34,79
+offsets:4,6,38,90
+hand right
+bounds:242,4,39,105
+head
+bounds:532,19,125,163
+offsets:0,40,165,203
+leg down right
+bounds:71,94,67,300
+leg down right shade
+bounds:2,94,67,300
+leg up right
+bounds:140,99,100,295
+mouth close smile
+bounds:497,30,27,8
+offsets:1,0,28,8
+mouth open
+bounds:657,230,35,24
+mouth open m
+bounds:460,3,37,21
+offsets:2,1,40,22
+mouth open smile
+bounds:497,40,32,20
+nose
+bounds:230,14,2,2
+sneakers right
+bounds:183,18,55,79
+torso
+bounds:659,157,58,71
+offsets:0,0,59,71

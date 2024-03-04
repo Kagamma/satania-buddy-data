@@ -1,0 +1,13 @@
+using 'data/scripts/libs/sprites.evil'
+
+sprite_load('sprites.plist') // Load sprite sheet
+sprite_scale_set(0.3) // Set sprite's scaling value
+sprite_animation_talk_set('talk_loop', 'idle') // Set default talking animations
+
+sprite_animation_play('idle', true) // Play "idle" animation
+
+// Put character on taskbar (windows only)
+if sprite_startup_position_on_taskbar != null
+  sprite_startup_position_on_taskbar()
+
+while true yield // Infinite loop

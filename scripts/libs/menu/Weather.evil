@@ -1,0 +1,21 @@
+using 'data/scripts/libs/weather.evil'
+using 'data/scripts/libs/ip.evil'
+
+units = 'metric'
+api_key = 'b97d0e1a370bd2542e2ad62a17fc3d49'
+
+try {
+  geo = geo_get(ip_get())
+  data = weather_get(geo.lat, geo.lon, units, api_key)
+  talk(
+    string_format(
+      'Current weather in {0} is {1}, with temperature of {2}C and humidity of {3}%.',
+      [data.name, data.description, data.temp, data.humidity]
+    )
+  )
+} catch(e) {
+  talk('Error while trying to request for weather data: ' + e)
+}
+
+set('weather_delay', ticks)
+

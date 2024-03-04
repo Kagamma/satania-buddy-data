@@ -1,0 +1,13 @@
+if is_sow
+  sprite_load('sit/skeleton.x3dv')
+else
+  sprite_load('idle/skeleton.x3dv')
+
+sprite_scale_set(0.1)
+sprite_animation_play('blink_loop', true)
+sprite_animation_play('idle_to_read', false)
+while sprite_animation_is_playing('idle_to_read') yield
+sprite_animation_play('read', true)
+
+// Infinite loop, to avoid Satania to call this script again right after the end
+while true yield

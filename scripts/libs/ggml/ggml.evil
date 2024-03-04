@@ -1,0 +1,163 @@
+// Evil script bindings for ggml
+
+GGML_TYPE_F32  = 0
+GGML_TYPE_F16  = 1
+GGML_TYPE_Q4_0 = 2
+GGML_TYPE_Q4_1 = 3
+GGML_TYPE_Q5_0 = 6
+GGML_TYPE_Q5_1 = 7
+GGML_TYPE_Q8_0 = 8
+GGML_TYPE_Q8_1 = 9
+GGML_TYPE_Q2_K = 10
+GGML_TYPE_Q3_K = 11
+GGML_TYPE_Q4_K = 12
+GGML_TYPE_Q5_K = 13
+GGML_TYPE_Q6_K = 14
+GGML_TYPE_Q8_K = 15
+GGML_TYPE_I8   = 16
+GGML_TYPE_I16  = 17
+GGML_TYPE_I32  = 18
+GGML_TYPE_COUNT = 19
+
+ggml_init_params_t = [
+  mem_size: 0,
+  mem_buffer: 8,
+  no_alloc: 16,
+  SIZE: 32,
+]
+
+import 'libggml.dll', 'libggml.so' {
+  fn ggml_print_object(buffer): void
+  fn ggml_print_objects(buffer): void
+  fn ggml_graph_print(buffer): void
+
+  // Use this instead of original ggml_init()
+  // This is because evil script cannot pass C struct correctly on Unix system
+  fn ggml_init(buffer): buffer 'ggml_init2'
+  fn ggml_free(buffer): void
+
+  fn ggml_used_mem(buffer): u64
+
+  fn ggml_nelements(buffer): u64
+  fn ggml_nrows(buffer): u64
+  fn ggml_nbytes(buffer): u64
+  fn ggml_nbytes_pad(buffer): u64
+  fn ggml_nbytes_split(buffer, i32): u64
+
+  fn ggml_type_name(i32): buffer
+  fn ggml_type_size(i32): u64 
+  fn ggml_blck_size(i32): u64
+  fn ggml_type_sizef(i32): u64
+
+  fn ggml_element_size(buffer): u64
+
+  fn ggml_is_transposed(buffer): u8
+  fn ggml_is_contiguous(buffer): u8
+  fn ggml_is_permuted(buffer): u8
+
+  fn ggml_new_tensor_1d(buffer, u32, i64): buffer
+  fn ggml_new_tensor_2d(buffer, u32, i64, i64): buffer
+  fn ggml_new_tensor_3d(buffer, u32, i64, i64, i64): buffer
+  fn ggml_new_tensor_4d(buffer, u32, i64, i64, i64, i64): buffer
+
+  fn ggml_dup_tensor(buffer, buffer): buffer
+
+  fn ggml_get_tensor(buffer, buffer): buffer
+
+  fn ggml_set_zero(buffer): buffer      
+  fn ggml_set_i32(buffer, i32): buffer
+  fn ggml_set_f32(buffer, f32): buffer
+
+  fn ggml_get_i32_1d(buffer, i32): i32
+  fn ggml_set_i32_1d(buffer, i32, i32): i32
+
+  fn ggml_get_f32_1d(buffer, i32): f32
+  fn ggml_set_f32_1d(buffer, i32, f32): f32
+
+  fn ggml_get_data(buffer): buffer
+  fn ggml_get_data_f32(buffer): buffer
+
+  fn ggml_get_name(buffer): buffer
+  fn ggml_set_name(buffer, buffer): buffer
+
+  //
+  fn ggml_add(buffer, buffer, buffer): buffer  
+  fn ggml_add_inplace(buffer, buffer, buffer): buffer
+  fn ggml_sub(buffer, buffer, buffer): buffer 
+  fn ggml_sub_inplace(buffer, buffer, buffer): buffer
+  fn ggml_mul(buffer, buffer, buffer): buffer  
+  fn ggml_mul_inplace(buffer, buffer, buffer): buffer
+  fn ggml_div(buffer, buffer, buffer): buffer  
+  fn ggml_div_inplace(buffer, buffer, buffer): buffer
+  fn ggml_sum(buffer, buffer): buffer                
+  fn ggml_sum_rows(buffer, buffer): buffer  
+  fn ggml_sqr(buffer, buffer): buffer
+  fn ggml_sqr_inplace(buffer, buffer): buffer
+  fn ggml_sqrt(buffer, buffer): buffer
+  fn ggml_sqrt_inplace(buffer, buffer): buffer
+  fn ggml_log(buffer, buffer): buffer
+  fn ggml_log_inplace(buffer, buffer): buffer     
+  fn ggml_mean(buffer, buffer): buffer
+  fn ggml_argmax(buffer, buffer): buffer        
+  fn ggml_repeat(buffer, buffer, buffer): buffer
+  fn ggml_repeat_back(buffer, buffer, buffer): buffer       
+  fn ggml_concat(buffer, buffer, buffer): buffer
+  fn ggml_abs(buffer, buffer): buffer             
+  fn ggml_abs_inplace(buffer, buffer): buffer
+  fn ggml_sgn(buffer, buffer): buffer
+  fn ggml_sgn_inplace(buffer, buffer): buffer
+  fn ggml_neg(buffer, buffer): buffer
+  fn ggml_neg_inplace(buffer, buffer): buffer
+  fn ggml_step(buffer, buffer): buffer
+  fn ggml_step_inplace(buffer, buffer): buffer
+  fn ggml_tanh(buffer, buffer): buffer
+  fn ggml_tanh_inplace(buffer, buffer): buffer
+  fn ggml_elu(buffer, buffer): buffer
+  fn ggml_elu_inplace(buffer, buffer): buffer    
+  fn ggml_relu(buffer, buffer): buffer
+  fn ggml_relu_inplace(buffer, buffer): buffer 
+  fn ggml_gelu(buffer, buffer): buffer
+  fn ggml_gelu_inplace(buffer, buffer): buffer 
+  fn ggml_gelu_quick(buffer, buffer): buffer
+  fn ggml_gelu_quick_inplace(buffer, buffer): buffer    
+  fn ggml_silu(buffer, buffer): buffer
+  fn ggml_silu_inplace(buffer, buffer): buffer
+
+  //
+  fn ggml_norm(buffer, buffer): buffer    
+  fn ggml_norm_inplace(buffer, buffer): buffer
+
+  //
+  fn ggml_mul_mat(buffer, buffer, buffer): buffer       
+  fn ggml_scale(buffer, buffer, buffer): buffer
+  fn ggml_scale_inplace(buffer, buffer, buffer): buffer
+
+  //
+  fn ggml_reshape(buffer, buffer, buffer): buffer    
+  fn ggml_reshape_1d(buffer, buffer, u64): buffer
+  fn ggml_reshape_2d(buffer, buffer, u64, u64): buffer
+  fn ggml_reshape_3d(buffer, buffer, u64, u64, u64): buffer
+  fn ggml_reshape_4d(buffer, buffer, u64, u64, u64, u64): buffer
+
+  //
+  fn ggml_new_graph(buffer): buffer
+  fn ggml_graph_reset(buffer): void
+
+  //
+  fn ggml_build_forward_expand(buffer, buffer): void
+  fn ggml_graph_compute_with_ctx(buffer, buffer, i32): void
+
+  //
+  fn ggml_cpu_has_avx(): i32       
+  fn ggml_cpu_has_avx2(): i32
+  fn ggml_cpu_has_avx512(): i32
+  fn ggml_cpu_has_fma(): i32
+  fn ggml_cpu_has_neon(): i32
+  fn ggml_cpu_has_arm_fma(): i32
+  fn ggml_cpu_has_f16c(): i32
+  fn ggml_cpu_has_fp16_va(): i32
+  fn ggml_cpu_has_wasm_simd(): i32
+  fn ggml_cpu_has_blas(): i32
+  fn ggml_cpu_has_sse3(): i32
+  fn ggml_cpu_has_vsx(): i32
+}

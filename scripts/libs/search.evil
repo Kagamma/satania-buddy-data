@@ -1,0 +1,76 @@
+default_search_engine = 'https://www.google.com/?q={0}'
+default_reverse_image_search_engine = 'https://yandex.com/images/search?rpt=imageview&url={0}'
+
+fn search_keyword() {
+  chat_mode_set(CHATMODE_SCRIPT)
+  talk('What do you want to find?')
+  chat = ''
+  while true {
+    chat = ''
+    while chat = '' {
+      chat = chat_result_get()
+      yield
+    }
+    talk('Is "' + chat + '" the one you are looking for?')
+
+    chat = ''
+    while length(string_grep(chat, ['yes', 'yeah', 'right', 'wrong', 'no', 'nope'])) = 0 {
+      chat = chat_result_get()
+      yield
+    }
+
+    if length(string_grep(chat, ['yes', 'yeah', 'right'])) > 0 {
+      break
+    }
+    talk('Please try again.\nWhat do you want to find?')
+  }
+  http_open(string_format(default_search_engine, [chat]))
+}
+
+fn search_image() {
+  // Reverse Image Search using Yandex
+
+  path = fs_directory_config_get() + '_clipboard_result.jpg'
+
+  // Make sure no _clipboard_result.jpg around
+  if fs_file_exists(path) = true {
+    fs_file_delete(path)
+  }
+  // Check clipboard
+  s = clipboard_get()
+  if s = null {
+    // Data in clipboard is not a text, try to save it as image
+    clipboard_to_file(path)
+  } else {
+    // Data in clipboard is a text
+    path = s
+  }
+  data = ''
+  mess = 'Looking for it...'
+  // path is an HTTP URL?
+  if length(string_grep(path, ['http:', 'https:'])) > 0 {
+    data = path
+    talk(mess)
+  } else
+  // Perform image search
+  // The idea is to upload the file to a temporary host, then pass URL to Yandex
+  if (fs_file_exists(path) = true) &
+     (length(string_grep(string_lowercase(path), ['.ico', '.png', '.jpg', '.jpeg', '.bmp', '.tga', '.gif', '.pcx'])) > 0) {
+    formdata = 'reqtype=fileupload\ntime=1h'
+    search = http_upload(
+      'https://litterbox.catbox.moe/resources/internals/api.php',
+      [],
+      formdata,
+      'fileToUpload',
+      path
+    )
+    talk(mess)
+    while http_is_success(search) = false yield
+    data = http_result_get(search).data
+  }
+  if string_find(data, 'http') >= 0
+    http_open(string_format(default_reverse_image_search_engine, [data]))
+  else
+    talk("That doesn't look like an image. Make sure you copy the image you want to search into clipboard first.")
+}
+

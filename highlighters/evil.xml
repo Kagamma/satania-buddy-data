@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Language name="evil script" ext="evil" CaseSensitive="true">
+  <Attribute Name="Keyword" ForeCol="#1080B0" Style="b"></Attribute>
+  <Attribute Name="Special" ForeCol="#D080D0"></Attribute>
+  <Attribute Name="String" ForeCol="#B08060"></Attribute>
+  <Attribute Name="Number" ForeCol="#B0B090"></Attribute>
+  <Attribute Name="Comment" ForeCol="#308000" Style=""></Attribute>
+  <Attribute Name="Directive" ForeCol="#60B0B0" Style=""></Attribute>
+
+  <Comment Start="//" ></Comment>
+  <Comment Start="/*" End="*/" Multiline="true" Folding="true"></Comment>
+
+  <Token CharsStart="0..9" Content='0..9.' Attribute='Number'></Token>
+  <Token CharsStart="0x" Content='0..9a..fA..Fx' Attribute='Number'></Token>
+  <Token CharsStart="#" Content='0..9A..Za..z_' Attribute='Directive'></Token>
+  <!--<Token CharsStart="A..Z" Content='0..9A..Z_' Attribute='Constant'></Token>-->
+  <Token CharsStart='"' End='"' Attribute='String' Escape="\" Multiline="true" ></Token>
+  <Token CharsStart="'" End="'" Attribute='String' Escape="\" Multiline="true" ></Token>
+  <Identifiers CharsStart="_a..z" Content='0..9a..z'>
+    <Keyword>using if else for while do yield break continue return in to downto fn import switch case default try catch throw</Keyword>
+    <Special>null true false result self</Special>
+  </Identifiers>
+
+  <Block Name="block" Start="{" End="}"></Block>
+  <Block Name="map" Start="[" End="]"></Block>
+</Language>

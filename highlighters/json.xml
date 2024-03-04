@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Language name="JSON" ext="json">
+  <Attribute Name="Key" ForeCol="#EEEEEE" Style=""></Attribute>
+  <Attribute Name="Value" ForeCol="#B08060" Style=""></Attribute>
+  <Attribute Name="String" ForeCol="#B08060" Style=""></Attribute>
+  <Attribute Name="StringLiteral" ForeCol="#D080D0" Style=""></Attribute>
+  <Attribute Name="Number" ForeCol="#B0B090" Style=""></Attribute>
+
+  <Token CharsStart="0..9" Content = '-0..9.abcdef' Attribute='Number'></Token>
+  <Token Regex="\x22[^:]+\x22 ?:" Attribute='Key'></Token>
+  <Token Regex=": ?\x22[^\x22]+\x22" Attribute='Value'></Token>
+
+  <Identifiers CharsStart= "a..z" Content = "a..z">
+    <StringLiteral>
+      null true false
+    </StringLiteral>
+  </Identifiers>
+
+  <Block Name="JSONArray" Start='[' End=']' ></Block>
+  <Block Name="JSONObject" Start='{' End='}' ></Block>
+</Language>

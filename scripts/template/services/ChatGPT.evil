@@ -1,0 +1,7 @@
+using 'data/scripts/libs/chatgpt.evil'
+
+key = '<YOUR SECRET KEY>'
+
+description = 'My name is ' + charname + '. Don\'t you dare to forget it!'
+
+chatgpt_request(key, description)

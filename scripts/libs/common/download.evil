@@ -1,0 +1,141 @@
+// Provides useful functions to download files
+
+/**
+ * Display a simple progress bar at the feet of character
+ * @name: The sprite name that used to render progress bar
+ * @pos: content's current position
+ * @len: content's length
+ */
+fn download_display_progress_bar(name, pos, len) {
+  progress = 100 * pos / len
+  sprite_other_render(name,
+    '#X3D V3.0 utf8
+    PROFILE Interchange
+
+    Transform {
+      translation 0 0 0
+      children [
+        Shape {
+          geometry Text {
+            string "${round(progress * 100) / 100}%"
+            fontStyle FontStyle {
+              size 20
+              style "BOLD"
+              justify "MIDDLE"
+            }
+          }
+          appearance Appearance {
+            material UnlitMaterial {
+              emissiveColor 0 0 0
+            }
+          }
+        }
+      ]
+    }
+
+    Transform {
+      translation -100 10 -2
+      center -1 0 0
+      scale ${progress} 12 1
+      children [
+        Shape {
+          geometry Box {}
+          appearance Appearance {
+            material UnlitMaterial {
+              emissiveColor 0 1 0
+            }
+          }
+        }
+      ]
+    }
+
+    Transform {
+      translation -100 10 -3
+      center -1 0 0
+      scale 100 12 1
+      children [
+        Shape {
+          geometry Box {}
+          appearance Appearance {
+            material UnlitMaterial {
+              emissiveColor 1 1 1
+            }
+          }
+        }
+      ]
+    }'
+  , 'x3dv')
+}
+
+/**
+ * Download a single file. Return exception if download fails.
+ * @url: The link to the file we want to download
+ * @save_as: The name of file on disk
+ * @chunk_size: Size of each chunk in bytes
+ */
+fn download(url, save_as, chunk_size) {
+  // Get file size
+  id = http_fetch('HEAD', url, [], null)
+  while http_is_success(id) = false yield
+  headers = http_result_get(id).headers
+  //
+  size = number(headers['content-length'])
+  if save_as = ''
+    throw 'Invalid file name: ${save_as}'
+  save_as_part = save_as + '.tmp'
+  // If part exists, get the size and continue to download from there
+  pos = 0
+  if fs_file_exists(save_as_part) {
+    pos = fs_file_size_get(save_as_part)
+    // Something is wrong, better redownload the file
+    if pos > size {
+      fs_file_delete(save_as_part)
+      pos = 0
+    }
+  }
+  //
+  download_display_progress_bar('dl_progress_bar', pos, size)
+  while pos < size {
+    // Construct request headers
+    headers = [
+      'range': 'bytes=${pos}-${pos + chunk_size}'
+    ]
+    // Request a part of the file
+    part = null
+    retry = 3
+    while true {
+      id = http_fetch('GET', url, headers, null)
+      while http_is_success(id) = false yield
+      part = http_result_get(id, true)
+      if (part.status >= 400) {
+        retry -= 1
+        if retry = 0 {
+          throw 'Error while trying to download "${save_as}": ${part.status}'
+        }
+      } else {
+        break
+      }
+    }
+    while true {
+      try {
+        fs_file_write_binary(save_as_part, part.data, buffer_length(part.data))
+        break
+      } catch(e) {
+        // Likely not happen. But in case it happen, wait a bit before trying again
+        writeln(e)
+        wait(1)
+      }
+    }
+    //
+    download_display_progress_bar('dl_progress_bar', pos, size)
+    pos += number(part.headers['content-length'])
+  }
+  // Delete the file if exists on disk
+  if fs_file_exists(save_as)
+    fs_file_delete(save_as)
+  fs_file_rename(save_as_part, save_as)
+  sprite_other_delete('dl_progress_bar')
+}
+
+// Test
+// download('https://github.com/LostRuins/koboldcpp/releases/download/v1.46.1/koboldcpp_nocuda.exe', 'koboldcpp_nocuda.exe')

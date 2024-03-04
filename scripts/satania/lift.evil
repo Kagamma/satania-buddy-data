@@ -1,0 +1,27 @@
+if is_sow() {
+  sprite_load('sit/skeleton.x3dv')
+} else {
+  sprite_load('idle/skeleton.x3dv')
+}
+sprite_scale_set(0.1)
+sprite_animation_play('blink_loop', true)
+sprite_animation_play('lift_idle_to_hide', false)
+while sprite_animation_is_playing('lift_idle_to_hide')
+  yield
+sprite_animation_play('lift_hide', true)
+wait(random(3) + 1)
+sprite_animation_stop('lift_hide')
+sprite_animation_play('lift_up', false)
+while sprite_animation_is_playing('lift_up')
+  yield
+sprite_animation_play('lift_hold', true)
+wait(random(3) + 3)
+sprite_animation_play('lift_hold', false)
+sprite_animation_play('lift_down', false)
+while sprite_animation_is_playing('lift_down')
+  yield
+wait(1)
+sprite_animation_play('lift_hide_to_idle', false)
+while sprite_animation_is_playing('lift_hide_to_idle')
+  yield
+

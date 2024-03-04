@@ -1,0 +1,3 @@
+using 'data/scripts/libs/reminder.evil'
+
+reminder_check(true)

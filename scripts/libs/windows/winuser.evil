@@ -1,0 +1,34 @@
+#require windows // Only load this file if the OS is windows
+
+using 'data/scripts/libs/common/ctypes.evil'
+
+TPOINT = [
+  x: 0,
+  y: 4,
+  SIZE: 8
+]
+
+TRECT = [
+  left: 0,
+  top: 4,
+  right: 8,
+  bottom: 12,
+  SIZE: 16
+]
+
+TMONITORINFO = [
+  cbSize: 0,
+  rcMonitor: cstruct(TRECT).offset(4).value,
+  rcWork: cstruct(TRECT).offset(20).value,
+  dwFlags: 36,
+  SIZE: 40
+]
+
+import 'user32.dll' {
+  fn FindWindowA(buffer, buffer): u32
+  fn GetWindowRect(u32, buffer): u32
+  fn MonitorFromPoint(buffer, u32): u32
+  fn GetMonitorInfoA(u32, buffer): u32
+}
+
+

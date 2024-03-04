@@ -1,0 +1,9 @@
+SATANIA_SCALING_VALUE = 0.1
+
+fn anim_idle() {
+  sprite_load('idle.json') // Load sprite sheet
+  sprite_scale_set(SATANIA_SCALING_VALUE) // Set sprite's scaling value
+  sprite_animation_stop_all()
+  sprite_animation_play('eyes_blink', true)
+  sprite_animation_play('idle_1', true)
+}

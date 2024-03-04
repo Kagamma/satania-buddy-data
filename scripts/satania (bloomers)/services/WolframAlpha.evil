@@ -1,0 +1,3 @@
+using 'data/scripts/libs/wolframalpha.evil'
+
+wolframalpha_request('3EHTP4-QYU8LR5KE2', chat_message)

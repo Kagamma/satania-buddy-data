@@ -1,0 +1,190 @@
+{
+  "$$ClassName" : "TCastleUserInterface",
+  "FullSize" : true,
+  "Name" : "Group1",
+  "$NonVisualComponents" : [
+    {
+      "$$ClassName" : "TCastleFont",
+      "Name" : "FontSystem",
+      "OptimalSize" : 16
+    }
+  ],
+  "$Children" : [
+    {
+      "$$ClassName" : "TCastleViewport",
+      "Camera" : "Camera",
+      "FullSize" : true,
+      "Items" : {
+        "$$ClassName" : "TCastleRootTransform",
+        "PhysicsProperties" : {
+          "$$ClassName" : "TPhysicsProperties"
+        },
+        "$Children" : [
+          {
+            "$$ClassName" : "TCastleTransform",
+            "Name" : "SpriteTransform",
+            "$Children" : [
+              {
+                "$$ClassName" : "TCastleTransform",
+                "Name" : "SketchAfter"
+              },
+              {
+                "$$ClassName" : "TCastleScene",
+                "ExposeTransforms" : [
+                  "Bone_touch"
+                ],
+                "Name" : "Sprite",
+                "ProcessEvents" : true,
+                "RenderOptions" : {
+                  "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                  "BlendingSourceFactor" : "bsOne",
+                  "MagnificationFilter" : "magLinear",
+                  "MinificationFilter" : "minLinear"
+                },
+                "ScalePersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "X" : 1.0000000149011612E-001,
+                  "Y" : 1.0000000149011612E-001,
+                  "Z" : 1.0000000149011612E-001
+                },
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "X" : 1.1010000000000000E+003,
+                  "Y" : 2.1200000000000000E+002
+                },
+                "URL" : "castle-data:/sprites/satania/idle/skeleton.x3dv",
+                "$Children" : [
+                  {
+                    "$$ClassName" : "TCastleTransform",
+                    "Name" : "Bone_touch",
+                    "RotationPersistent" : {
+                      "$$ClassName" : "TCastleVector4RotationPersistent",
+                      "Z" : 1.0000000000000000E+000
+                    },
+                    "TranslationPersistent" : {
+                      "$$ClassName" : "TCastleVector3Persistent",
+                      "X" : -6.0599999427795410E+000,
+                      "Y" : 1.8748199462890625E+003
+                    }
+                  }
+                ]
+              },
+              {
+                "$$ClassName" : "TCastleSpine",
+                "AnimateOnlyWhenVisible" : false,
+                "AutoAnimations" : [
+                ],
+                "ExposeTransforms" : [
+                  "touch"
+                ],
+                "Name" : "Spine",
+                "ProcessEvents" : true,
+                "Skins" : [
+                ],
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "X" : 1.1010000000000000E+003,
+                  "Y" : 2.1200000000000000E+002
+                },
+                "$Children" : [
+                  {
+                    "$$ClassName" : "TCastleTransform",
+                    "Name" : "touch",
+                    "RotationPersistent" : {
+                      "$$ClassName" : "TCastleVector4RotationPersistent",
+                      "W" : 1.5707700252532959E+000,
+                      "Z" : 1.0000000000000000E+000
+                    },
+                    "TranslationPersistent" : {
+                      "$$ClassName" : "TCastleVector3Persistent",
+                      "X" : 2.6999984741210938E+001,
+                      "Y" : 3.4073001098632812E+002
+                    },
+                    "$Behaviors" : [
+                      {
+                        "$$ClassName" : "TCastleSpineTransformBehavior",
+                        "Name" : "touch_Behavior"
+                      }
+                    ]
+                  }
+                ],
+                "$Behaviors" : [
+                  {
+                    "$$ClassName" : "TCastleSpineMixerBehavior",
+                    "Name" : "Mixer"
+                  }
+                ]
+              },
+              {
+                "$$ClassName" : "TCastleTransform",
+                "Name" : "SketchBefore",
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "X" : 1.1010000000000000E+003,
+                  "Y" : 2.1200000000000000E+002
+                }
+              }
+            ]
+          },
+          {
+            "$$ClassName" : "TCastleCamera",
+            "Name" : "Camera",
+            "Orthographic" : {
+              "$$ClassName" : "TCastleOrthographic"
+            },
+            "Perspective" : {
+              "$$ClassName" : "TCastlePerspective"
+            },
+            "ProjectionFar" : 1.0000000000000000E+003,
+            "ProjectionNear" : -1.0000000000000000E+003,
+            "ProjectionType" : "ptOrthographic",
+            "RotationPersistent" : {
+              "$$ClassName" : "TCastleVector4RotationPersistent",
+              "Z" : 1.0000000000000000E+000
+            },
+            "TranslationPersistent" : {
+              "$$ClassName" : "TCastleVector3Persistent",
+              "Z" : 5.0000000000000000E+002
+            }
+          }
+        ]
+      },
+      "Name" : "Viewport",
+      "Transparent" : true,
+      "InternalDesignCamera" : {
+        "$$ClassName" : "TCastleCamera",
+        "Name" : "",
+        "Orthographic" : {
+          "$$ClassName" : "TCastleOrthographic"
+        },
+        "Perspective" : {
+          "$$ClassName" : "TCastlePerspective"
+        },
+        "ProjectionType" : "ptOrthographic",
+        "RotationPersistent" : {
+          "$$ClassName" : "TCastleVector4RotationPersistent",
+          "Z" : 1.0000000000000000E+000
+        },
+        "TranslationPersistent" : {
+          "$$ClassName" : "TCastleVector3Persistent",
+          "Z" : 1.6000000000000000E+003
+        }
+      },
+      "InternalDesignNavigationType" : 2,
+      "InternalDesignNavigations[dnFly]" : {
+        "$$ClassName" : "TCastleWalkNavigationDesign",
+        "Exists" : false,
+        "Name" : ""
+      },
+      "InternalDesignNavigations[dnExamine]" : {
+        "$$ClassName" : "TCastleExamineNavigationDesign",
+        "Exists" : false,
+        "Name" : ""
+      },
+      "InternalDesignNavigations[dn2D]" : {
+        "$$ClassName" : "TCastle2DNavigationDesign",
+        "Name" : ""
+      }
+    }
+  ]
+}

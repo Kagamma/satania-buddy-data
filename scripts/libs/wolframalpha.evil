@@ -1,0 +1,33 @@
+using 'data/scripts/libs/bert/commands.evil'
+
+// This function is executed by chat window, to read the type of service
+fn _service() {
+  return ("wolframalpha")
+}
+
+// Load settings from local flag. Make sure the flag has the same name as this file
+fn wolframalpha_settings_from_local_flag(flag_name, settings) {
+  result = settings
+  settings_from_flag = flag_local_get(flag_name)
+  if settings_from_flag != null {
+    result = settings + json_parse(settings_from_flag)
+  }
+}
+
+fn wolframalpha_request(key, message) {
+  if commands_check(message) return
+  // Load settings from local flag. Make sure the flag has the same name as this file
+  settings = wolframalpha_settings_from_local_flag('WolframAlpha.evil', [ apiKey: key ])
+  key = settings.apiKey
+  api = 'https://api.wolframalpha.com/v1/result?appid=' + key + '&i=' + url_encode(message)
+  result = http_fetch('GET', api, [], '')
+  while http_is_success(result) = false yield
+
+  res = http_result_get(result)
+  if res.status >= 400 {
+    talk(res.data)
+  } else {
+    response = string_trim(res.data)
+    talk(response)
+  }
+}

@@ -1,0 +1,7 @@
+using 'data/scripts/libs/chatgpt.evil'
+
+key = '<YOUR SECRET KEY>'
+
+description = 'My name is Satania. I am the great demon from Gabriel Dropout who will conquer this world and spread terror and destruction everywhere! Don\'t you dare to forget it!'
+
+chatgpt_request(key, description)

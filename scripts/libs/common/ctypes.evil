@@ -1,0 +1,23 @@
+// Useful functions for working with C struct
+
+fn cstruct(m) {
+  // Adjust struct's offset
+  fn offset(v) {
+    for s in map_keys_get(self.value)
+      if (s != 'SIZE')
+        self.value[s] += v
+    result = self
+  }
+
+  // Make a new copy of m
+  value = []
+  for s in map_keys_get(m) {
+    value[s] = m[s]
+  }
+
+  result = [
+    value: value,
+    offset: offset
+  ]
+}
+

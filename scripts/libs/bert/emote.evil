@@ -1,0 +1,323 @@
+using 'data/scripts/libs/ggml/ggml.evil'
+using 'data/scripts/libs/bert/bert.evil'
+
+EMOTE_TOKEN_TEXT = 0
+EMOTE_TOKEN_BRACKET_OPEN = 1
+EMOTE_TOKEN_BRACKET_CLOSE = 2
+EMOTE_TOKEN_CODE = 3
+
+// Based on miku-gg's candidate_1.csv
+EMOTE_LIST = [
+  'angry': [
+    text: 'angry,furious,enraged',
+  ],
+  'sad': [
+    text: 'sad,depressed,downcast',
+  ],
+  'happy': [
+    text: 'happy,joyful,elated',
+  ],
+  'disgusted': [
+    text: 'disgusted,repulsed,revulsed',
+  ],
+  'begging': [
+    text: 'begging,pleading,imploring',
+  ],
+  'scared': [
+    text: 'scared,afraid,terrified',
+  ],
+  'excited': [
+    text: 'excited,thrilled,euphoric',
+  ],
+  'hopeful': [
+    text: 'hopeful,optimistic,encouraged',
+  ],
+  'longing': [
+    text: 'longing,yearning,craving',
+  ],
+  'proud': [
+    text: 'proud,honored,triumphant',
+  ],
+  'neutral': [
+    text: 'neutral,impartial,indifferent',
+  ],
+  'rage': [
+    text: 'rage,fury,wrath',
+  ],
+  'scorn': [
+    text: 'scorn,derision,contempt',
+  ],
+  'blushed': [
+    text: 'flustered,blushing',
+  ],
+  'pleasure': [
+    text: 'pleasure,satisfaction,delight',
+  ],
+  'lustful': [
+    text: 'lustful,desirous,appetent',
+  ],
+  'shocked': [
+    text: 'shocked,astounded,awed',
+  ],
+  'confused': [
+    text: 'confused,perplexed,baffled',
+  ],
+  'disappointed': [
+    text: 'disappointed,dismayed,disillusioned',
+  ],
+  'embarrassed': [
+    text: 'embarrassed,abashed,mortified',
+  ],
+  'guilty': [
+    text: 'guilt,remorseful,ashamed',
+  ],
+  'shy': [
+    text: 'shy,reserved,timid',
+  ],
+  'frustrated': [
+    text: 'frustrated,irritated,aggravated',
+  ],
+  'annoyed': [
+    text: 'annoyed,irked,piqued',
+  ],
+  'exhausted': [
+    text: 'exhausted,drained,weary',
+  ],
+  'tired': [
+    text: 'tired,lethargic,sluggish',
+  ],
+  'curious': [
+    text: 'curious,inquisitive,nosy',
+  ],
+  'intrigued': [
+    text: 'intrigued,fascinated,interested',
+  ],
+  'amused': [
+    text: 'amused,entertained,diverted',
+  ],
+]
+
+// Lexer
+
+// Return array of tokens
+fn emote_lex(text) {
+  fn char_peek(state, p) {
+    pos = state.pos + p
+    if pos <= length(state.text) - 1
+      result = state.text[pos]
+    else
+      result = null
+  }
+
+  fn char_next(state) {
+    state.pos += 1
+    if state.pos <= length(state.text) - 1
+      result = state.text[state.pos]
+    else
+      result = null
+  }
+
+  fn part_flush(state, list) {
+    if (state.part != '') {
+      list[length(list)] = [
+        value: state.part,
+        kind: EMOTE_TOKEN_TEXT
+      ]
+      state.part = ''
+    }
+  }
+
+  result = []
+  state = [
+    text: text,
+    pos : -1,
+    part: ''
+  ]
+  bracket_close = '*'
+  is_emote = false
+  while true {
+    c = char_next(state)
+    switch c {
+      //case '(':
+      //case '[':
+      case '*':
+        if !is_emote {
+          part_flush(state, result)
+          result[length(result)] = [
+            value: c,
+            kind: EMOTE_TOKEN_BRACKET_OPEN
+          ]
+          /*if (c == '(')
+            bracket_close = ')'
+          else
+          if (c == '[')
+            bracket_close = ']'
+          else
+            bracket_close = '*'*/
+          is_emote = true
+          break
+        }
+      case bracket_close:
+        part_flush(state, result)
+        result[length(result)] = [
+          value: c,
+          kind: EMOTE_TOKEN_BRACKET_CLOSE
+        ]
+        is_emote = false
+        break
+      case '`':
+        if (char_peek(state, 1) == '`') &&
+           (char_peek(state, 2) == '`') {
+          part_flush(state, result)
+          state.pos += 2
+          result[length(result)] = [
+            kind: EMOTE_TOKEN_CODE
+          ]
+        }
+        break
+      case null:
+        part_flush(state, result)
+        return
+      default:
+        state.part += c
+    }
+  }
+}
+
+// Parser
+
+
+// Return list of emotes
+fn emote_parse(token_list) {
+  fn token_next(state) {
+    state.pos += 1
+    if state.pos <= length(state.token_list) - 1
+      result = state.token_list[state.pos]
+    else
+      result = null
+  }
+
+  result = []
+  state = [
+    pos: -1,
+    token_list: token_list,
+    mode_code: false,
+    mode_emote: false
+  ]
+  while true {
+    token = token_next(state)
+    if (token == null)
+      return
+    else
+    if (token.kind == EMOTE_TOKEN_CODE) {
+      state.mode_code = !state.mode_code
+    }
+    else
+    if (!state.mode_code) {
+      if (token.kind == EMOTE_TOKEN_BRACKET_OPEN) {
+        state.mode_emote = true
+      } else
+      if (token.kind == EMOTE_TOKEN_BRACKET_CLOSE) {
+        state.mode_emote = false
+      } else
+      if (state.mode_emote) && (state.pos <= length(state.token_list) - 2) {
+        if (token.kind == EMOTE_TOKEN_TEXT) {
+          result[length(result)] = token.value
+        }
+      }
+    }
+  }
+}
+
+// Public functions
+
+// Return latest emote and it's score, in text, map with emote_list.
+// If no emote is found, return null
+fn emote_get(text) {
+  // Evaluate
+  fn eval(e_ctx, emb_raw, text) {
+    bert_tokenize(e_ctx.bert_ctx, text, e_ctx.tokens, e_ctx.n_tokens, e_ctx.N)
+    bert_eval(e_ctx.bert_ctx, 3, e_ctx.tokens, buffer_i32_get(e_ctx.n_tokens), emb_raw)
+  }
+
+  // Find cosine similarity between 2 embeddings
+  fn similarity(ctx, gf, v1, v2) {
+    v = ggml_div(ctx,
+          ggml_sum(ctx,
+            ggml_mul(ctx, v1, v2)),
+          ggml_mul(ctx,
+            ggml_sqrt(ctx, ggml_sum(ctx, ggml_sqr(ctx, v1))),
+            ggml_sqrt(ctx, ggml_sum(ctx, ggml_sqr(ctx, v2)))))
+    ggml_build_forward_expand(gf, v)
+    ggml_graph_compute_with_ctx(ctx, gf, 1)
+    result = ggml_get_f32_1d(v, 0)
+  }
+
+  // Init bert and evaluate emotes beforehand
+  ctx = get('_emote_ctx')
+  if ctx == null {
+    ctx = []
+
+    ctx.list = EMOTE_LIST
+    ctx.bert_ctx = get('_bert_ctx')
+    if !ctx.bert_ctx {
+      ctx.bert_ctx = bert_load_from_file(BERT_MODEL)
+      set('_bert_ctx', ctx.bert_ctx)
+    }
+
+    params = buffer_create(ggml_init_params_t.SIZE)
+    ctx.ggml_mem = buffer_create(1024 * 1024 * 2)
+    buffer_u64_set(params + ggml_init_params_t.mem_size, buffer_length(ctx.ggml_mem))
+    buffer_u64_set(params + ggml_init_params_t.mem_buffer, ctx.ggml_mem)
+    buffer_u64_set(params + ggml_init_params_t.no_alloc, 0)
+    ctx.ggml_params = params
+
+    ctx.N = bert_n_max_tokens(ctx.bert_ctx) * 4
+    ctx.E = bert_n_embd(ctx.bert_ctx)
+    ctx.E_bytes = ctx.E * 4
+    ctx.tokens = buffer_create(ctx.N)
+    ctx.n_tokens = buffer_create(4)
+
+    // Find embeddings
+    for key in map_keys_get(ctx.list) {
+      item = ctx.list[key]
+      item.embedding = buffer_create(ctx.E_bytes)
+      eval(ctx, item.embedding, item.text)
+    }
+    set('_emote_ctx', ctx)
+  }
+  //
+  result = null
+  tokens = emote_lex(text)
+  emotes = emote_parse(tokens)
+  last = length(emotes)
+  if (last > 0) {
+    from_text = emotes[last - 1]
+    ggml_ctx = ggml_init(ctx.ggml_params)
+    gf = ggml_new_graph(ggml_ctx)
+    emb_text = ggml_new_tensor_1d(ggml_ctx, GGML_TYPE_F32, ctx.E)
+    emb_check = ggml_new_tensor_1d(ggml_ctx, GGML_TYPE_F32, ctx.E)
+    eval(ctx, ggml_get_data(emb_text), from_text)
+    for key in map_keys_get(ctx.list) {
+      item = ctx.list[key]
+      buffer_copy(ggml_get_data(emb_check), item.embedding, ctx.E_bytes)
+      score = similarity(ggml_ctx, gf, emb_text, emb_check)
+      if result = null {
+        result = [
+          score: score,
+          emote: key,
+        ]
+      } else
+      if result.score < score {
+        result.score = score
+        result.emote = key
+      }
+    }
+    ggml_free(ggml_ctx)
+  }
+}
+
+// How to use
+text = '*Satania wriggled her body in embarrassment*'
+writeln(emote_get(text))
+

@@ -1,0 +1,21 @@
+q = http_fetch('GET', 'https://www.gentoo.org/news/', [], null)
+while http_is_success(q) = false yield
+res = http_result_get(q)
+if res.status == 200 {
+  data = res.data
+  dates = http_query(data, '/html/body/div/div/div/article/h2[2]/small')
+  titles = http_query(data, '/html/body/div/div/div/article/h2[2]/a')
+  if length(dates) > 0 {
+    s = 'Gentoo Linux latest news:'
+    for i = 0 to min(2, length(dates)) {
+      s += '\n\n'
+      date = string_replace(dates[i], '(', '')
+      date = string_replace(date, ')', '')
+      s += 'Date: ' + date + '\n';
+      s += 'Title: ' + titles[i];
+    }
+    talk(s)
+  }
+} else {
+  throw string(res)
+}

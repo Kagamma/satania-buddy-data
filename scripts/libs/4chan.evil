@@ -1,0 +1,62 @@
+fn fourchan_display_archive(board) {
+  status = http_fetch('GET', 'https://boards.4channel.org/' + board + '/archive', [], null)
+  while http_is_success(status) = false yield
+  html = http_result_get(status).data
+
+  titles = http_query(html, '/html/body/table/tbody/tr/td[2]')
+  urls = http_query(html, '/html/body/table/tbody/tr/td[3]/a/@href')
+
+  links = ''
+  filter = ''
+  ans = ''
+
+  while true {
+    string_empty(links)
+    count = 0
+    for i = 0 to length(titles) - 1 {
+      s = titles[i]
+      if (filter = '') || (string_find(string_lowercase(s), string_lowercase(filter)) >= 0) {
+        string_concat(links, links, string_format("<li><a href='{1}'>{0}</a></li>\n", [s, i]))
+        count += 1
+      }
+      // Limit to only 100 results
+      if count >= 100 break
+    }
+
+    ask('', string_format("
+    <a href='_close'>Close</a><br />
+    <h3>/" + board + "/ archive</h3>
+    <form>
+      <input name='filter' value='{1}' />
+      <input type='submit' value='Filter' />
+    </form>
+    <ul>
+      {0}
+    </ul>
+    <a href='_close'>Close</a><br />
+    ", [links, filter]), 500, 300)
+    ans = answer()
+    if typeof(ans) = 'string' {
+      break
+    }
+    // ans is not a string, so msut be filter value
+    filter = ans.filter
+  }
+
+  if ans != '_close' {
+    url = 'https://boards.4channel.org' + urls[number(ans)]
+    status = http_fetch('GET', url, [], null)
+    while http_is_success(status) = false yield
+    html = http_result_get(status).data
+
+    title = http_query(html, '/html/body/form/div[1]/div[1]/div[1]/div/blockquote/text()')
+    messages = http_query(html, '/html/body/form/div[1]/div[1]/div/div[2]/blockquote/text()')
+
+    for s in title + messages {
+      talk(s)
+      wait(2)
+    }
+    talk('END OF THREAD')
+  }
+}
+

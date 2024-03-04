@@ -1,0 +1,19 @@
+q = http_fetch('GET', 'https://archlinux.org/news/', [], null)
+while http_is_success(q) = false yield
+res = http_result_get(q)
+if res.status == 200 {
+  data = res.data
+  dates = http_query(data, '/html/body/div[2]/div[2]/table/tbody/tr/td[1]')
+  titles = http_query(data, '/html/body/div[2]/div[2]/table/tbody/tr/td[2]/a')
+  if length(dates) > 0 {
+    s = 'Arch Linux latest news:'
+    for i = 0 to min(2, length(dates)) {
+      s += '\n\n'
+      s += 'Date: ' + dates[i] + '\n'
+      s += 'Title: ' + titles[i]
+    }
+    talk(s)
+  }
+} else {
+  throw string(res)
+}

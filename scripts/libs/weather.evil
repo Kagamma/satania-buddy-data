@@ -1,0 +1,26 @@
+/**
+ * Make a request to openweathermap in order to retrieve weather information at user's geolocation.
+ * Throw exception when the request fails.
+ * @lat: number, user's latitude
+ * @lat: number, user's longtitude
+ * @units: string, temperature unit
+ * @api_key: string, openweathermap's API key
+ * @return: A map contains user's geolocation and related information.
+ */
+fn weather_get(lat, lng, units, api_key) {
+  a = http_fetch('GET', string_format('https://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&units={2}&appid={3}', [lat, lng, units, api_key]), [], null)
+  while http_is_success(a) = false yield
+  res = http_result_get(a)
+  if res.status >= 400
+    throw 'Unexpected response ${res.status}'
+  json = json_parse(res.data)
+
+  result = [
+    name: json.name,
+    description: json.weather[0].description,
+    temp: json.main.temp,
+    humidity: json.main.humidity
+  ]
+}
+
+

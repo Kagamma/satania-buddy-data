@@ -1,0 +1,33 @@
+sprite_startup_position_on_taskbar = null
+
+#require windows // Only load the below code if OS is windows
+
+using 'data/scripts/libs/windows/winuser.evil'
+
+/**
+ * Put the sprite on top right of taskbar.
+ * This only work if the os is windows, sow is disabled, and taskbar's top >= 600.
+ */
+sprite_startup_position_on_taskbar = fn() {
+  if (is_sow()) || (os != 'windows') {
+    return
+  }
+  flag = 'sprite_startup_position_on_taskbar_flag'
+  is_set = get(flag)
+  if (is_set) return
+  set(flag, true)
+  // Find taskbar hwnd
+  taskbar = FindWindowA('Shell_traywnd', 0)
+  if !taskbar return
+  // Allocate rect buffer
+  rect = buffer_create(TRECT.SIZE)
+  // Get taskbar rect info
+  if !GetWindowRect(taskbar, rect) return
+  //
+  top = buffer_u32_get(rect + TRECT.top)
+  if (top < 600) return
+  right = buffer_u32_get(rect + TRECT.right) - 150
+  // Set sprite position
+  sprite_position_set(right, top)
+}
+

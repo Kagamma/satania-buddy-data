@@ -1,0 +1,104 @@
+/**
+ * Notify unread emails
+ */
+fn email_notify() {
+  email_imap_load()
+  while email_imap_is_loading() yield
+  s = '';
+  is_empty = false
+  if email_imap_is_success() {
+    c = email_imap_unseen_count()
+    s = 'You have ' + string(c) + ' unread email'
+    if c > 1
+      s += 's'
+    if c > 0 {
+      s += '\n\nMost recent email:'
+        + '\n - Sender: ' + email_imap_sender_get(0)
+        + '\n - Subject: ' + email_imap_subject_get(0)
+    } else {
+      is_empty = true
+    }
+  } else {
+    s = 'Cannot load emails. Make sure you configure your mailbox in "Settings".'
+  }
+  if is_empty = false
+    talk(s)
+}
+
+/**
+ * Shows a list of recent unread emails
+ */
+fn email_list() {
+  email_imap_load()
+  while email_imap_is_loading() yield
+  s = ''
+  is_empty = false
+  if email_imap_is_success() {
+    c = email_imap_unseen_count()
+    if c = 0 {
+      is_empty = true
+    } else {
+      while true {
+        emails = ''
+        for i = 0 to c - 1 {
+          subject = string_replace(email_imap_subject_get(i), '<', '&lt;')
+          subject = string_replace(subject, '>', '&gt;')
+          sender = string_replace(email_imap_sender_get(i), '<', '&lt;')
+          sender = string_replace(sender, '>', '&gt;')
+          emails += string_format('
+            <tr>
+              <td>{0}</td>
+              <td><a href="{1}">{2}</a></td>
+              <td>{3}</td>
+            </tr>
+          ', [i + 1, i, subject, sender])
+        }
+        ask('Unread emails', string_format('
+          <a href="_close">Close</a>
+          <h3>Unread emails</h3>
+          <table border="1" cellspacing="0" cellpadding="3">
+            <tr>
+              <td>#</td>
+              <td>Subject</td>
+              <td>Sender</td>
+            </tr>
+            {0}
+          </table>
+        ', [emails]), 640, 480)
+        ans = answer()
+        if (ans != '_close') {
+          ans = number(ans)
+          subject = string_replace(email_imap_subject_get(ans), '<', '&lt;')
+          subject = string_replace(subject, '>', '&gt;')
+          sender = string_replace(email_imap_sender_get(ans), '<', '&lt;')
+          sender = string_replace(sender, '>', '&gt;')
+          body = email_imap_body_get(ans)
+          while true {
+            ask('"' + email_imap_subject_get(ans) + '" by ' + email_imap_sender_get(ans), string_format('
+              <a href="_close">Close</a>
+              <h3>{0}</h3>
+              by <b>{1}</b><br /><br />
+              <div>
+                {2}
+              </div>
+            ', [subject, sender, body]), 640, 480)
+            ans2 = answer()
+            if ans2 != '_close' {
+              // Likely an URL, so we will open it with browser
+              http_open(ans2)
+            } else {
+              break
+            }
+          }
+        } else {
+          break
+        }
+      }
+    }
+  } else {
+    s = 'Cannot load emails. Make sure you configure your mailbox in "Settings".'
+  }
+  if is_empty = false
+    talk(s)
+}
+

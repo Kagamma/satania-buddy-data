@@ -1,0 +1,29 @@
+/**
+ * Make a request to https://api.ipify.org in order to retrieve user's IP.
+ * Throw exception when the request fails.
+ * @return: A string contains user's IP.
+ */
+fn ip_get() {
+  a = http_fetch('GET', 'https://api.ipify.org', [], null)
+  while http_is_success(a) = false yield
+  res = http_result_get(a)
+  if res.status >= 400
+    throw 'Unexpected response ${res.status}'
+  result = res.data
+}
+
+/**
+ * Make a request to http://ip-api.com/json/ in order to retrieve user's geolocation.
+ * Throw exception when the request fails.
+ * @ip: A string contains user's IP
+ * @return: A map contains user's geolocation and related information.
+ */
+fn geo_get(ip) {
+  a = http_fetch('GET', 'http://ip-api.com/json/' + ip, [], null)
+  while http_is_success(a) = false yield
+  res = http_result_get(a)
+  if res.status >= 400
+    throw 'Unexpected response ${res.status}'
+  result = json_parse(res.data)
+}
+

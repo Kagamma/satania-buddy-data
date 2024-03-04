@@ -1,0 +1,23 @@
+if is_sow() {
+  // Sit on window doesn't have jump, so we default to lift
+  scheme_load('lift.evil')
+}
+
+sprite_load('idle/skeleton.x3dv')
+sprite_scale_set(0.1)
+sprite_animation_play('blink_loop', true)
+sprite_animation_play('idle_to_jump', false)
+while sprite_animation_is_playing('idle_to_jump')
+  yield
+sprite_animation_speed_set('jump', 0.8)
+c = 5 + random(15) // Jump at least 5 times
+while c > 0 {
+  sprite_animation_play('jump', false)
+  while sprite_animation_is_playing('jump')
+    yield
+  c = c - 1
+}
+sprite_animation_play('jump_to_idle', false)
+while sprite_animation_is_playing('jump_to_idle')
+  yield
+

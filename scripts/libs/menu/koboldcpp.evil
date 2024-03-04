@@ -1,0 +1,173 @@
+using 'data/scripts/libs/common/download.evil'
+
+fn koboldcpp_terminate(process_id) { 
+  process_terminate(process_id)
+  if os == 'windows' {
+    process_run('taskkill -f -im satania_koboldcpp_nocuda.exe', false)
+  } else {
+    process_run('/usr/bin/pkill -f satania_koboldcpp_nocuda', false)
+  }
+}
+
+koboldcpp_executable = 'koboldcpp/satania_koboldcpp_nocuda.exe'
+if os != 'windows' {
+  koboldcpp_executable = 'koboldcpp/satania_koboldcpp_nocuda'
+}
+
+// Check if koboldcpp and model exists
+config_dir = string_replace(fs_directory_config_get(), string_trim('\\ '), '/') // string_trim() is mainly to avoid highlighter bug
+model_name = 'dolphin-2.2.1-mistral-7b.Q4_K_M.gguf'
+fs_directory_create(config_dir + 'koboldcpp')
+is_koboldcpp_exists = fs_file_exists(config_dir + koboldcpp_executable)
+is_model_exists = fs_file_exists(config_dir + 'koboldcpp/model.gguf')
+exec = koboldcpp_executable + ' \"${config_dir}koboldcpp/model.gguf\" --smartcontext --contextsize 8192 --skiplauncher'
+
+ans = null
+// Trigger download if not exists
+if (!is_koboldcpp_exists) || (!is_model_exists) {
+  ask('Setting up koboldcpp', '
+    A simple way to get koboldcpp up and running <s>for lazy people ;)</s><br />
+    <li>This will install <b>koboldcpp 1.51.1</b> and <b>${model_name}</b> to your config directory, locate at <b>${config_dir}</b></li>
+    <li>About 4.3GB of data will be downloaded.</li>
+    <li><font color="red"><b>Please do not interact with ${charname} while the files are being downloaded.</b></font></li>
+    <br />
+    Do you want to install?
+    <li><a href="Yes">Yes</a></li>
+    <li><a href="_close">No</a></li>
+    <li><a href="Chad">Take me to koboldcpp website instead</a></li>
+  ', 550, 350)
+  ans = answer()
+  if (ans = 'Yes') {
+    worker_create('koboldcpp', "
+      using 'data/scripts/libs/common/download.evil'
+
+      config_dir = '${config_dir}'
+      is_koboldcpp_exists = ${is_koboldcpp_exists}
+      is_model_exists = ${is_model_exists}
+      if !is_koboldcpp_exists {
+        stream_enable()
+        stream('Please wait while I am downloading koboldcpp_nocuda')
+        stream_disable()
+        if os == 'windows'
+          download('https://github.com/LostRuins/koboldcpp/releases/download/v1.55.1/koboldcpp_nocuda.exe', config_dir + 'koboldcpp/satania_koboldcpp_nocuda.exe', 1024 * 1024 * 4)
+        else {
+          s = config_dir + 'koboldcpp/satania_koboldcpp_nocuda'
+          download('https://github.com/LostRuins/koboldcpp/releases/download/v1.55.1/koboldcpp-linux-x64-nocuda', s, 1024 * 1024 * 4)
+          process_run('/usr/bin/chmod +x ' + s, false)
+        }
+      }
+      if !is_model_exists {
+        stream_enable()
+        stream('Please wait while I am downloading ${model_name}')
+        stream_disable()
+        download('https://huggingface.co/TheBloke/dolphin-2.2.1-mistral-7B-GGUF/resolve/main/${model_name}', config_dir + 'koboldcpp/model.gguf', 1024 * 1024 * 8)
+        stream_enable()
+        stream('koboldcpp installed! Please run \"koboldcpp\" again to start the app.')
+        stream_disable()
+      }
+    ")
+    return
+  } else
+  if (ans = 'Chad') {
+    http_open('https://github.com/LostRuins/koboldcpp')
+  }
+}
+
+if (ans = null) || (ans != '_close') {
+  process_id = get('satania_koboldcpp_nocuda_id')
+  if process_id != null {
+    // Kill current koboldcpp process if any
+    // process_terminate(process_id)
+    // talk('Restarting koboldcpp, please wait...')
+    ask('koboldcpp', '
+      koboldcpp is running. What do you want to do?
+      <li><a href="Restart">Restart koboldcpp</a></li>
+      <li><a href="Close">Close koboldcpp</a></li>
+    ', 350, 220)
+    ans = answer()
+    if (ans = 'Restart') {
+      koboldcpp_terminate(process_id)
+      app_close_script_unregister('koboldcpp_instance')
+      set('satania_koboldcpp_nocuda_id', null)
+      talk('Restarting koboldcpp, please wait...')
+    } else
+    if (ans = 'Close') {
+      koboldcpp_terminate(process_id)
+      set('satania_koboldcpp_nocuda_id', null)
+      talk('koboldcpp is closed.')
+      return
+    } else {
+      return
+    }
+  } else {
+    ask('koboldcpp', '
+      This will run koboldcpp with 8k context.
+      <li><a href="CPU">Run on CPU (requires 16GB RAM)</a></li>
+      <li><a href="GPU">Run on GPU (requires 8GB VRAM)</a></li>
+      <br />                                            
+      <li><a href="Uninstall koboldcpp">Uninstall koboldcpp</a></li>
+      <li><a href="Uninstall model">Uninstall model</a></li>
+      <li><a href="Uninstall all">Uninstall both koboldcpp and model</a></li>
+    ', 350, 220)
+    ans = answer()
+    if (ans = 'CPU') {
+      talk('Starting koboldcpp on CPU, please wait...')
+    } else
+    if (ans = 'GPU') {
+      exec = koboldcpp_executable + ' \"${config_dir}koboldcpp/model.gguf\" --useclblast 0 0 --smartcontext --gpulayers 24 --contextsize 8192 --skiplauncher'
+      talk('Starting koboldcpp on GPU, please wait...')
+    } else
+    if (ans = 'Uninstall koboldcpp') {
+      fs_file_delete(config_dir + koboldcpp_executable)
+      talk('koboldcpp uninstalled!')
+      return
+    } else
+    if (ans = 'Uninstall model') {
+      fs_file_delete(config_dir + 'koboldcpp/model.gguf')
+      talk('model uninstalled!')
+      return
+    } else
+    if (ans = 'Uninstall all') {
+      fs_file_delete(config_dir + koboldcpp_executable)
+      fs_file_delete(config_dir + 'koboldcpp/model.gguf')
+      talk('koboldcpp and model uninstalled!')
+      return
+    } else {
+      return
+    }
+  }
+
+  // Run the process
+  app_close_script_register('koboldcpp_instance', "
+    if os == 'windows' {
+      process_run('taskkill -f -im satania_koboldcpp_nocuda.exe', false)
+    } else {
+      process_run('/usr/bin/pkill -f satania_koboldcpp_nocuda', false)
+    }
+  ")
+  worker_create('koboldcpp', "
+    exe = '${config_dir}${exec}'
+    process_id = process_run(exe, false)
+    set('satania_koboldcpp_nocuda_id', process_id)
+    output = ''
+    while true {
+      pipe = process_pipe_get(process_id)
+      if !pipe.running
+        break
+      else
+      if pipe.output != null {
+        output += pipe.output
+        write(output)
+        // TODO: For some reason it cannot get the last text in stdin
+        if string_find(output, 'compute buffer total size') >= 0 {
+          stream_enable()
+          stream('koboldcpp is up and running!\nIf you still see errors when trying to chat with me, then please wait a bit more before trying again.')
+          stream_disable()
+          break
+        }
+      }
+      yield
+    }
+  ", 1, [])
+}
+

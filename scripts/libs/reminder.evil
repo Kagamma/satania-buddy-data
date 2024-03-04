@@ -1,0 +1,177 @@
+fn reminder_check(is_zero_notify) {
+  reminders = reminder_today_get()
+
+  if length(reminders) > 0 {
+    s = 'There are things you need to do today at:\n\n';
+    for i = 0 to length(reminders) - 1 {
+      t = reminders[i]
+      s += string_format('- {0}h{1}m\n\n', [t['hour'], t['minute']])
+    }
+    talk(s)
+  } else {
+    if is_zero_notify = true
+      talk('You have no reminders today')
+  }
+}
+
+fn reminder_create_wizard() {
+  chat_mode_set(CHATMODE_SCRIPT)
+
+  // Declaratoin
+  now = dt_now()
+  minute = 0
+  hour = 0
+  day = 0
+  month = 0
+  year = 0
+  date_final = 0
+  time_final = 0
+  message = ''
+  script = 's ="{0}" notify(s) sound_play("beep.ogg")'
+
+  // Set date
+  talk('Okay, let me set a reminder for you.\n\nWhich day do you want me to set?')
+  while true {
+    day = dt_day_get(now)
+    month = dt_month_get(now)
+    year = dt_year_get(now)
+    chat = ''
+    while chat = '' {
+      chat = string_lowercase(chat_result_get())
+      yield
+    }
+    ms = months_to_numbers(chat)
+    ns = numbers(chat)
+    ms_len = length(ms)
+    ns_len = length(ns)
+    if (string_find(chat, 'today') >= 0) {
+      date_final = now
+      talk('Today, right?')
+    } else
+    if (string_find(chat, 'tomorrow') >= 0) {
+      date_final = dt_day_add(now, 1)
+      talk('Tomorrow, right?')
+    } else
+    if string_find(chat, 'next month') >= 0 {
+      date_final = dt_month_add(now, 1)
+      talk('Next month, right?')
+    } else
+    if string_find(chat, 'next year') >= 0 {
+      date_final = dt_year_add(now, 1)
+      talk('Next year, right?')
+    } else
+    if ms_len = 0 & ns_len = 1 {
+      if string_find(chat, 'month') >= 0 {
+        date_final = dt_month_add(now, ns[0])
+        talk(string_format('{0} months from now, right?', [ns[0]]))
+      } else
+      if string_find(chat, 'year') >= 0 {
+        date_final = dt_year_add(now, ns[0])
+        talk(string_format('{0} years from now, right?', [ns[0]]))
+      } else {
+        date_final = dt_day_add(now, ns[0])
+        talk(string_format('{0} days from now, right?', [ns[0]]))
+      }
+    } else
+    if ms_len = 1 & ns_len = 1 {
+      day = ns[0]
+      month = ms[0]
+      date_final = dt_date_set(year, month, day)
+      talk(string_format('{0}/{1}/{2}, right?', [month, day, year]))
+    } else
+    if ms_len = 1 & ns_len = 2 {
+      day = ns[0]
+      month = ms[0]
+      year = ns[0]
+      date_final = dt_date_set(year, month, day)
+      talk(string_format('{0}/{1}/{2}, right?', [month, day, year]))
+    } else {
+      talk("I don't understand. Let's try again.")
+      continue
+    }
+    chat = ''
+    // Yes/No
+    while length(string_grep(chat, ['yes', 'yeah', 'right', 'wrong', 'no', 'nope'])) = 0 {
+      chat = string_lowercase(chat_result_get())
+      yield
+    }
+    if length(string_grep(chat, ['yes', 'yeah', 'right'])) > 0 {
+      break
+    }
+    talk("Let's try again.")
+  }
+
+  // Set time
+  talk('Which time do you want me to set?')
+  while true {
+    minute = 0
+    hour = 0
+    chat = ''
+    while chat = '' {
+      chat = string_lowercase(chat_result_get())
+      yield
+    }
+    ns = numbers(chat)
+    ns_len = length(ns)
+    if ns_len = 1 {
+      hour = ns[0]
+      talk(string_format('{0}h{1}m, right?', [hour, minute]))
+    } else
+    if ns_len = 2 {
+      hour = ns[0]
+      minute = ns[1]
+      talk(string_format('{0}h{1}m, right?', [hour, minute]))
+    } else {
+      talk("I don't understand. Let's try again.")
+      continue
+    }
+    chat = ''
+    // Yes/No
+    while length(string_grep(chat, ['yes', 'yeah', 'right', 'wrong', 'no', 'nope'])) = 0 {
+      chat = string_lowercase(chat_result_get())
+      yield
+    }
+    if length(string_grep(chat, ['yes', 'yeah', 'right'])) > 0 {
+      time_final = dt_time_set(hour, minute, 0, 0)
+      break
+    }
+    talk("Let's try again.")
+  }
+
+  // Set message
+  talk('Which message do you want me to remind you?')
+  while true {
+    message = ''
+    chat = ''
+    while chat = '' {
+      chat = string_lowercase(chat_result_get())
+      yield
+    }
+    message = chat
+    if length(message) > 0
+      message[0] = string_uppercase(message[0])
+    talk(string_format('{0}, right?', [message]))
+
+    chat = ''
+    // Yes/No
+    while length(string_grep(chat, ['yes', 'yeah', 'right', 'wrong', 'no', 'nope'])) = 0 {
+      chat = string_lowercase(chat_result_get())
+      yield
+    }
+    if length(string_grep(chat, ['yes', 'yeah', 'right'])) > 0 {
+      break
+    }
+    talk("Let's try again.")
+  }
+
+  reminder_create(date_final, time_final, string_format(script, message))
+
+  day = dt_day_get(date_final)
+  month = dt_month_get(date_final)
+  year = dt_year_get(date_final)
+
+  talk(string_format(
+    'Done!\n\nTime: {0}/{1}/{2} {3}h{4}m\nMessage: {5}',
+    [month, day, year, hour, minute, message]
+  ))
+}

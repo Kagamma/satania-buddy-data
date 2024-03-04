@@ -1,0 +1,9 @@
+if is_sow
+  sprite_load('sit/skeleton.x3dv')
+else
+  sprite_load('idle/skeleton.x3dv')
+
+sprite_scale_set(0.1)
+sprite_animation_stop('read')
+sprite_animation_play('read_to_idle', false)
+while sprite_animation_is_playing('read_to_idle') yield

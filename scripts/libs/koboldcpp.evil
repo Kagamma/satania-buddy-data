@@ -1,0 +1,176 @@
+using 'data/scripts/libs/bert/commands.evil'
+
+// This function is executed by chat window, to read the type of service
+fn _service() {
+  return ("koboldcpp")
+}
+
+// Load settings from local flag. Make sure the flag has the same name as this file
+fn koboldcpp_settings_from_local_flag(flag_name, settings) {
+  result = settings
+  settings_from_flag = flag_local_get(flag_name)
+  if settings_from_flag != null {
+    result = settings + json_parse(settings_from_flag)
+  }
+}
+
+/**
+ * Make a request to koboldcpp API.
+ * @params.api: koboldcpp's API endpoint
+ * @params.settings: A map containts koboldcpp's configs
+ * @params.stoppers: An array of stopping tokens
+ * @params.description:
+     - token_start: Self-explain
+     - token_end: Self-explain
+     - charname: Character's name
+     - persona: Self-explain
+     - personality: Self-explain
+     - scenario: Self-explain
+     - example_dialogue: Self-explain
+     - greeting: Self-explain
+     - reminder: Text that will be put at the start of each satania's message.
+ */
+fn koboldcpp_request(params) {
+  //
+  token_start = string(params.description.token_start)
+  token_end = string(params.description.token_end)
+
+  fn name_process(s) {
+    result = string_replace(s, '{{char}}', params.description.charname)
+    result = string_replace(result, '{{user}}', username)
+    result = string_replace(result, '<START>', '')
+  }
+
+  // Get chat history
+  list = chat_history_get()
+  // Check for commands
+  it = list[length(list) - 1]
+  if (it.name = username) {
+    if commands_check(it.message)
+      return
+  }
+  //
+  chat = ''
+  last_user = '';
+  base = ''
+  base += "\n${params.description.charname}'s Persona: " + string(params.description.persona)
+  base += "\n${params.description.charname}'s Personality: " + string(params.description.personality)
+  base += '\nScenario: ' + string(params.description.scenario)
+  base = name_process(base)
+  reminder = name_process(string(params.description.reminder))
+
+  for it, index in list {
+    last_user = it.name
+    //if ((index + 1) % 40) = 0 {
+      // Insert the scenario again every 40 messages
+    //  chat += base
+    //}
+    if (it.name = params.description.charname) {
+      chat += reminder + token_start + it.name + ': ' + it.message + '\n' + token_end
+    } else
+    if (it.name = username) {
+      chat += token_start + it.name + ': ' + it.message + '\n' + token_end
+    }
+  }
+
+  // Adds default stoppers
+  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', token_start, token_end]
+
+  // Construct prompt
+  if last_user = params.description.charname
+    chat += token_start + params.description.charname + ':'
+  else
+    chat += reminder + token_start + params.description.charname + ':'
+  base += '\n\nStart conversation:\n'
+  // Likely not contain greeting message
+  if length(list) == 0 {
+    base += name_process(string(params.description.greeting))
+  }
+  base += '\nConversation samples: ' + name_process(string(params.description.example_dialogue)) + chat
+  output = ''
+  max_tokens = params.settings.max_length
+  params.settings.max_length = 8
+  n_tokens = 0
+
+  // Simulating streaming, by asking for 8 tokens until it hit stoppers, or reach max_token
+  stream_enable()
+  outputs = []
+  i = -2
+  is_hold_for_codeblock = false
+  invalid_json_remaining = 3
+  while n_tokens < max_tokens {
+    eos = false
+    params.settings.prompt = base + output
+
+    result = http_fetch('POST', params.api, [], params.settings)
+    while http_is_success(result) = false yield
+    res = http_result_get(result)
+
+    if res.status < 400 {
+      res.data = string_replace(res.data, '\\r', '')
+      // Invalid json?
+      if res.data[0] != '{' {
+        invalid_json_remaining -= 1
+        // If 3 or more invalid json in a row, let it crashes!
+        if invalid_json_remaining > 0 {
+          continue
+        }
+      }
+      json = json_parse(res.data)
+      invalid_json_remaining = 3
+      if json = null
+        continue
+      //
+      if (json.results[0].text = '') {
+        eos = true
+        break
+      }
+      text = output + json.results[0].text
+      len = -1
+      len_current = -1
+      // Check for stoppers
+      if (params.stoppers != null) {
+        for s in params.stoppers {
+          len_current = string_find(text, s)
+          if len_current >= 0 {
+            eos = true
+            if (len_current < len) || (len == -1)
+              len = len_current
+          }
+        }
+      }
+      if !eos
+        len = length(text)
+      output = string_delete(text, len, length(text) - len)
+    } else {
+      stream_disable()
+      talk_system(res)
+      return
+    }
+    outputs[length(outputs)] = output
+    if i >= 0 {
+      s = string_trim_left(outputs[i])
+      if (is_hold_for_codeblock) {
+        i += 1
+        s += string_trim_left(outputs[i])
+        is_hold_for_codeblock = false
+      } else
+      if (string_find(s, '`') >= 0) && (string_find(s, '```') < 0) {
+        is_hold_for_codeblock = true
+      } else {
+        stream(s)
+      }
+      if i > 0 {
+        // We do not need to keep last output, set to null so that gc can collect its used memory
+        outputs[i - 1] = null
+      }
+    }
+    if (!is_hold_for_codeblock) {
+      i += 1
+    }
+    if eos
+      break
+  }
+  stream(string_trim(outputs[i + 1]))
+  stream_disable()
+}

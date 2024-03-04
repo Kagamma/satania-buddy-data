@@ -1,0 +1,43 @@
+SATANIA_SCALING_VALUE = 0.15
+
+fn anim_idle() {
+  sprite = ''
+  anim = ''
+  if is_sow() {
+    sprite = 'sit/skeleton.x3dv'
+    anim = 'idle_' + string(random(2) + 1)
+  } else {
+    sprite = 'idle/skeleton.x3dv'
+    anim = 'idle_' + string(random(3) + 1)
+  }
+  sprite_load(sprite)
+  sprite_scale_set(SATANIA_SCALING_VALUE)
+  sprite_animation_play(anim, true)
+  sprite_animation_play('blink_loop', true)
+}
+
+fn anim_read_begin() {
+  if is_sow()
+    sprite_load('sit/skeleton.x3dv')
+  else
+    sprite_load('idle/skeleton.x3dv')
+
+  sprite_scale_set(SATANIA_SCALING_VALUE)
+  sprite_animation_play('blink_loop', true)
+  sprite_animation_play('idle_to_read', false)
+  while sprite_animation_is_playing('idle_to_read') yield
+  sprite_animation_play('read', true)
+}
+
+fn anim_read_end() {       
+  if is_sow()
+    sprite_load('sit/skeleton.x3dv')
+  else
+    sprite_load('idle/skeleton.x3dv')
+
+  sprite_scale_set(SATANIA_SCALING_VALUE)
+  sprite_animation_stop('read')
+  sprite_animation_play('read_to_idle', false)
+  while sprite_animation_is_playing('read_to_idle') yield
+}
+

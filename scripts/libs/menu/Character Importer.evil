@@ -1,0 +1,70 @@
+using 'data/scripts/libs/character_generator.evil'
+
+ask('Import character from chub.ai', '
+  Import character from <a href="website">chub.ai</a><br /><br />
+  <input name="url" value="" style="width:100%" placeholder="Paste character URL here" />
+', 500, 150)
+ans = answer()
+
+if (ans == 'website') {
+  http_open('https://chub.ai/')
+} else
+if (typeof(ans) == 'map') {
+  url = string_trim(ans.url)
+  char_id = null
+  char_json = null
+  char_avatar = fs_directory_config_get() + '_avatar.png'
+
+  if (string_find(url, 'chub.ai/characters/') >= 0) {
+    talk('Importing...')
+    // Request for character's ID
+    url_id = string_replace(url, 'https://chub.ai/characters/', '')
+    url_id = string_replace(url_id, 'https://www.chub.ai/characters/', '')
+    url_api = 'https://api.chub.ai/api/characters/' + url_id + '?full=true'
+    id = http_fetch('GET', url_api, [], null)
+    while !http_is_success(id) yield
+    res = http_result_get(id)
+    if (res.status == 200) {
+      json = json_parse(res.data)
+      char_id = json.node.id
+      //
+    } else {
+      throw 'Error ${res.status} while getting character\'s ID!'
+    }
+    // Request for character's JSON
+    url_json = 'https://api.chub.ai/api/v4/projects/' + string(char_id) + '/repository/files/raw%252Ftavern_raw.json/raw?ref=main&response_type=blob'
+    id = http_fetch('GET', url_json, [], null)
+    while !http_is_success(id) yield
+    res = http_result_get(id)
+    if (res.status == 200) {
+      char_json = json_parse(res.data)
+      //
+    } else {
+      throw 'Error ${res.status} while getting character\'s JSON data!'
+    }
+    // Request for character's avatar
+    url_avatar = 'https://avatars.charhub.io/avatars/' + string(url_id) + '/tavern.png'
+    id = http_fetch('GET', url_avatar, [], null)
+    while !http_is_success(id) yield
+    res = http_result_get(id, true)
+    if (res.status == 200) {
+      fs_file_delete(char_avatar)
+      fs_file_write_binary(char_avatar, res.data, buffer_length(res.data))
+      //
+    } else {
+      throw 'Error ${res.status} while getting character\'s avatar!'
+    }
+    // Generate character
+    char_json.char_name = char_json.name
+    if char_json.char_persona == null
+      char_json.char_persona = ''
+    char_json.world_scenario = char_json.scenario
+    char_json.example_dialogue = char_json.mes_example
+    char_json.greeting = char_json.first_mes
+    //
+    ai_character_generator(char_json, char_avatar)
+    talk('Character "${char_json.name}" has been created! You can change to this character in Settings.')
+  } else {
+    talk('Wrong URL, please paste character\'s URL from http://chub.ai to the textbox.')
+  }
+}

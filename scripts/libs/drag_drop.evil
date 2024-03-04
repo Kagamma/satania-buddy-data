@@ -1,0 +1,57 @@
+using 'data/scripts/libs/character_generator.evil'
+
+/**
+ * This function serves as default drag & drop behavior for characters. See 'data/scripts/<character>/system/drop-files.evil'
+ */
+fn drag_drop() {
+  files = drop_files
+
+  // We only process if there's only 1 file
+  if (length(files) != 1)
+    return
+
+  filename = files[0]
+  is_png = string_find(string_lowercase(filename), '.png') >= 0
+  ask_json = ''
+  json = ai_character_extract_from_file(filename)
+  if (json != null) && (typeof(json.char_name) == 'string') {
+    ask_json = '
+      <form>
+        <input type="hidden" name="answer" value="create_char" />
+        <input type="submit" style="width:95%;text-align:center" value=\'Create new "${json.char_name}" character\' />
+      </form>
+    '
+  }
+  ask('', '
+    <div style="width:95%;text-align:center">What do you want to do with this file?</div>
+    ' + ask_json + '
+    <form>
+      <input type="hidden" name="answer" value="evilc" />
+      <input type="submit" style="width:95%;text-align:center" value="Open in Evil Script Editor" />
+    </form>
+    <form>
+      <input type="hidden" name="answer" value="hex" />
+      <input type="submit" style="width:95%;text-align:center" value="Open in Hex Viewer" />
+    </form>
+    <form>
+      <input type="hidden" name="answer" value="exit" />
+      <input type="submit" style="width:95%;text-align:center" value="Exit" />
+    </form>
+  ', 300, 200)
+  ans = answer()
+  if (ans.answer == 'exit')
+    return
+  if (ans.answer == 'evilc')
+    tool_evilc_editor(filename)
+  else
+  if (ans.answer == 'hex')
+    tool_hex_editor(filename)
+  else {
+    if is_png {
+      ai_character_generator(json, filename)
+    } else {
+      ai_character_generator(json, null)
+    }
+    talk('Character "${json.char_name}" has been created! You can change to this character in Settings.')
+  }
+}
