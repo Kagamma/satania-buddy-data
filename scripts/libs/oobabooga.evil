@@ -77,16 +77,16 @@ fn tgw_request(params) {
   }
 
   // Adds default stoppers
-  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', token_start, token_end]
+  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', '[/INST]', token_start, token_end]
 
   // Add dynatemp
   if   (params.settings.dynatemp_low == null)
-    && (params.settings.dynatemp_high == null)    
+    && (params.settings.dynatemp_high == null)
     && (params.settings.dynatemp_range != null)
     && (params.settings.dynatemp_range != 0) {
-    params.settings.dynamic_temperature = true    
-    params.settings.dynatemp_low = params.settings.temperature - params.settings.dynamic_temperature / 2  
-    params.settings.dynatemp_high = params.settings.temperature + params.settings.dynamic_temperature / 2         
+    params.settings.dynamic_temperature = true
+    params.settings.dynatemp_low = params.settings.temperature - params.settings.dynamic_temperature / 2
+    params.settings.dynatemp_high = params.settings.temperature + params.settings.dynamic_temperature / 2
     params.settings.dynatemp_exponent = 1
     params.settings.dynamic_temperature = true
   }

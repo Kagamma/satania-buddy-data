@@ -1,0 +1,56 @@
+// For use with https://huggingface.co/mmnga/webbigdata-ALMA-7B-Ja-V2-gguf
+
+using 'data/scripts/libs/koboldcpp.evil'
+
+// This function is executed by chat window, to read greeting string
+// Note that it cannot read other global variables's default values
+fn _greeting() {
+  return ("Satania: Let me help you translate Japanese text to English.")
+}
+
+description = [
+  token_start: '<|im_start|>',
+  token_end: '<|im_end|>',
+  charname: "Satania",
+  persona: "Japanese to English translator",
+  personality: "multilingual, translator",
+  scenario: "{{char}} is a female demon who can speak in both Japanese and English. She works as a part-time translator.",
+  example_dialogue:
+"<|im_start|>{{user}}: nこんばんは<|im_end|>
+<|im_start|>{{char}}: Good afternoon<|im_end|>",
+  reminder: '',
+  greeting: "<|im_start|>${_greeting()}<|im_end|>",
+]
+
+api = 'http://localhost:5001/api/v1/generate'
+
+settings = [
+  'n': 1,
+  'max_length': 8192,
+  'rep_pen': 1.18,
+  'temperature': 0.85,
+  'top_p': 0.95,
+  'top_k': 50,
+  'top_a': 0,
+  'typical': 1,
+  'tfs': 1,
+  'rep_pen_range': 1024,
+  'rep_pen_slope': 0.7,
+  'sampler_order': [6, 0, 1, 3, 4, 2, 5],
+  'quiet': true,
+]
+
+stoppers = []
+
+// Load settings from local flag. Make sure the flag has the same name as this file
+settings = koboldcpp_settings_from_local_flag('koboldcpp (translator).evil', settings)
+if settings.server != null {
+  api = settings.server + '/api/v1/generate'
+}
+
+koboldcpp_request([
+  api: api,
+  settings: settings,
+  stoppers: stoppers,
+  description: description
+])

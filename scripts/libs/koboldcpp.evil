@@ -74,7 +74,7 @@ fn koboldcpp_request(params) {
   }
 
   // Adds default stoppers
-  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', token_start, token_end]
+  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', '[/INST]', token_start, token_end]
 
   // Construct prompt
   if last_user = params.description.charname
