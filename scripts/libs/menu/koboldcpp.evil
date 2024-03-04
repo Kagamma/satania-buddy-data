@@ -159,7 +159,7 @@ if (ans = null) || (ans != '_close') {
         output += pipe.output
         write(output)
         // TODO: For some reason it cannot get the last text in stdin
-        if string_find(output, 'compute buffer total size') >= 0 {
+        if (string_find(output, 'compute buffer total size') >= 0) || (string_find(output, 'graph splits') >= 0) {
           stream_enable()
           stream('koboldcpp is up and running!\nIf you still see errors when trying to chat with me, then please wait a bit more before trying again.')
           stream_disable()
