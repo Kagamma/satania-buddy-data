@@ -27,7 +27,7 @@ ans = null
 if (!is_koboldcpp_exists) || (!is_model_exists) {
   ask('Setting up koboldcpp', '
     A simple way to get koboldcpp up and running <s>for lazy people ;)</s><br />
-    <li>This will install <b>koboldcpp 1.51.1</b> and <b>${model_name}</b> to your config directory, locate at <b>${config_dir}</b></li>
+    <li>This will install <b>koboldcpp 1.58</b> and <b>${model_name}</b> to your config directory, locate at <b>${config_dir}</b></li>
     <li>About 4.3GB of data will be downloaded.</li>
     <li><font color="red"><b>Please do not interact with ${charname} while the files are being downloaded.</b></font></li>
     <br />
@@ -49,10 +49,10 @@ if (!is_koboldcpp_exists) || (!is_model_exists) {
         stream('Please wait while I am downloading koboldcpp_nocuda')
         stream_disable()
         if os == 'windows'
-          download('https://github.com/LostRuins/koboldcpp/releases/download/v1.55.1/koboldcpp_nocuda.exe', config_dir + 'koboldcpp/satania_koboldcpp_nocuda.exe', 1024 * 1024 * 4)
+          download('https://github.com/LostRuins/koboldcpp/releases/download/v1.58/koboldcpp_nocuda.exe', config_dir + 'koboldcpp/satania_koboldcpp_nocuda.exe', 1024 * 1024 * 4)
         else {
           s = config_dir + 'koboldcpp/satania_koboldcpp_nocuda'
-          download('https://github.com/LostRuins/koboldcpp/releases/download/v1.55.1/koboldcpp-linux-x64-nocuda', s, 1024 * 1024 * 4)
+          download('https://github.com/LostRuins/koboldcpp/releases/download/v1.58/koboldcpp-linux-x64-nocuda', s, 1024 * 1024 * 4)
           process_run('/usr/bin/chmod +x ' + s, false)
         }
       }
