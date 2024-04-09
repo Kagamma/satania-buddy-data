@@ -16,7 +16,7 @@ if os != 'windows' {
 
 // Check if koboldcpp and model exists
 config_dir = string_replace(fs_directory_config_get(), string_trim('\\ '), '/') // string_trim() is mainly to avoid highlighter bug
-model_name = 'dolphin-2.2.1-mistral-7b.Q4_K_M.gguf'
+model_name = 'dolphin-2.8-mistral-7b-v02-Q4_K_M.gguf'
 fs_directory_create(config_dir + 'koboldcpp')
 is_koboldcpp_exists = fs_file_exists(config_dir + koboldcpp_executable)
 is_model_exists = fs_file_exists(config_dir + 'koboldcpp/model.gguf')
@@ -60,7 +60,7 @@ if (!is_koboldcpp_exists) || (!is_model_exists) {
         stream_enable()
         stream('Please wait while I am downloading ${model_name}')
         stream_disable()
-        download('https://huggingface.co/TheBloke/dolphin-2.2.1-mistral-7B-GGUF/resolve/main/${model_name}', config_dir + 'koboldcpp/model.gguf', 1024 * 1024 * 8)
+        download('https://huggingface.co/bartowski/dolphin-2.8-mistral-7b-v02-GGUF/blob/main/${model_name}', config_dir + 'koboldcpp/model.gguf', 1024 * 1024 * 8)
         stream_enable()
         stream('koboldcpp installed! Please run \"koboldcpp\" again to start the app.')
         stream_disable()
