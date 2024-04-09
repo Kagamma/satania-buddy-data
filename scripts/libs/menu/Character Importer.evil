@@ -37,7 +37,7 @@ if (typeof(ans) == 'map') {
     while !http_is_success(id) yield
     res = http_result_get(id)
     if (res.status == 200) {
-      char_json = json_parse(res.data)
+      char_json = json_parse(res.data).data
       //
     } else {
       throw 'Error ${res.status} while getting character\'s JSON data!'
@@ -61,6 +61,9 @@ if (typeof(ans) == 'map') {
     char_json.world_scenario = char_json.scenario
     char_json.example_dialogue = char_json.mes_example
     char_json.greeting = char_json.first_mes
+    // A check to see if this is a valid character, by checking for character's name
+    if char_json.name == null
+      throw 'Unknown error while getting character\'s data!'
     //
     ai_character_generator(char_json, char_avatar)
     talk('Character "${char_json.name}" has been created! You can change to this character in Settings.')
