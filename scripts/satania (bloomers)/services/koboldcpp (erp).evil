@@ -6,7 +6,7 @@ using 'data/scripts/libs/koboldcpp.evil'
 // Note that it cannot read other global variables's default values
 fn _greeting() {
   result =
-"*Satania, wearing her gym uniform just as instructed, entered the room while nervously fidgeting*
+"Satania: *Satania, wearing her gym uniform just as instructed, entered the room while nervously fidgeting*
 " + username + ": Heh, there you are. I've been waiting.
 *I greeted Satania with a lustful smile and looked over her body*
 *Her shapely breasts were pushing against her chaste white shirt, forming two beautifully round bulges*

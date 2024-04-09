@@ -36,8 +36,8 @@ fn koboldcpp_request(params) {
   token_end = string(params.description.token_end)
 
   fn name_process(s) {
-    result = string_replace(s, '{{char}}', params.description.charname)
-    result = string_replace(result, '{{user}}', username)
+    result = string_replace_ignorecase(s, '{{char}}', params.description.charname)
+    result = string_replace_ignorecase(result, '{{user}}', username)
     result = string_replace(result, '<START>', '')
   }
 
