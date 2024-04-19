@@ -1,0 +1,96 @@
+// This little script is used to translate the visual novel "nise bitch"
+// by using sugoi translator's offline toolkit.
+// It can be modified to support other kirikiri vns.
+
+// Make sure to rename scenario.ks to scenario.txt, convert it to utf-8,
+// and put it to satania-buddy's root directory before starting.
+raw_data = string_split(fs_file_read_text('scenario.txt'), '\n')
+jp_data = []
+
+fn translate(text) {
+  // Send request to sugoi local server
+  a = http_fetch('POST', 'http://localhost:14366', [
+    'content-type': 'application/json',
+  ], [
+    content: text,
+    message: 'translate sentences',
+  ])
+  while !http_is_success(a) yield
+  res = http_result_get(a)
+  // Return translated text
+  result = string_replace(json_parse('{"a":${res.data}}').a, '<unk>', '')
+}
+
+// parse for data
+if fs_file_exists('scenario.translating.txt') = true {
+  jp_data = json_parse(fs_file_read_text('scenario.translating.txt'))
+} else {
+  j = 0
+  for i = 0 to length(raw_data) - 1 {
+    s = string_trim(raw_data[i])
+    if (s == '@e') || (s == '@ve') {
+      item = [
+        index: i - 1,
+        name: null,
+        message: raw_data[i - 1],
+        translated: false,
+      ]
+      if string_find(raw_data[i - 2], '@name chara=') >= 0 {
+        item.name = string_replace(string_replace(raw_data[i - 2], '"', ''), '@name chara=', '')
+      }
+      jp_data[j] = item
+      j += 1
+    }
+  }
+  fs_file_write_text('scenario.translating.txt', json_stringify(jp_data))
+}
+
+// translating
+j = 0
+for i = 0 to length(jp_data) - 1 {
+  item = jp_data[i]
+  writeln(i + 1, ' / ', length(jp_data))
+  // save progress after each 100 items
+  if (j % 100 == 0) && (j > 0) {
+    jp_text = json_stringify(jp_data)
+    fs_file_delete('scenario.translating.txt')
+    fs_file_write_text('scenario.translating.txt', jp_text)
+  }
+  // send jp string to sugoi to translate
+  if item.translated = false {
+    // translate name
+    if item.name != null {
+      item.name = translate(item.name)
+      writeln('NAME: ', item.name)
+    }
+    // translate message
+    item.message = translate(item.message)
+    writeln('MESSAGE: ', item.message)
+    //
+    item.translated = true
+    j += 1
+    yield
+  }
+}
+jp_text = json_stringify(jp_data)
+fs_file_delete('scenario.translating.txt')
+fs_file_write_text('scenario.translating.txt', jp_text)
+
+// merge results back 
+writeln('Merging results back...')
+for i = 0 to length(jp_data) - 1 {
+  item = jp_data[i]
+  index = item.index
+  raw_data[index] = item.message
+  if item.name != null {
+    raw_data[index - 1] = '@name chara="${item.name}"'
+  }
+}
+s = ''
+for i = 0 to length(raw_data) - 1 {
+  s += raw_data[i] + '\n'
+}
+fs_file_write_text('scenario.translated.txt', s)
+writeln('DONE!')
+
+
