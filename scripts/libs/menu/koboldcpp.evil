@@ -16,7 +16,7 @@ if os != 'windows' {
 
 // Check if koboldcpp and model exists
 config_dir = string_replace(fs_directory_config_get(), string_trim('\\ '), '/') // string_trim() is mainly to avoid highlighter bug
-model_name = 'dolphin-2.9.3-mistral-7B-32k-Q4_K_M.gguf'
+model_name = 'L3-8B-Stheno-v3.3-32K-Q4_K_M-imat.gguf'
 koboldcpp_version = 'v1.69'
 fs_directory_create(config_dir + 'koboldcpp')
 is_koboldcpp_exists = fs_file_exists(config_dir + koboldcpp_executable)
@@ -29,7 +29,7 @@ if (!is_koboldcpp_exists) || (!is_model_exists) {
   ask('Setting up koboldcpp', '
     A simple way to get koboldcpp up and running <s>for lazy people ;)</s><br />
     <li>This will install <b>koboldcpp ${koboldcpp_version}</b> and <b>${model_name}</b> to your config directory, locate at <b>${config_dir}</b></li>
-    <li>About 4.3GB of data will be downloaded.</li>
+    <li>About 4.8GB of data will be downloaded.</li>
     <li><font color="red"><b>Please do not interact with ${charname} while the files are being downloaded.</b></font></li>
     <br />
     Do you want to install?
@@ -61,7 +61,7 @@ if (!is_koboldcpp_exists) || (!is_model_exists) {
         stream_enable()
         stream('Please wait while I am downloading ${model_name}')
         stream_disable()
-        download('https://huggingface.co/bartowski/dolphin-2.9.3-mistral-7B-32k-GGUF/resolve/main/${model_name}', config_dir + 'koboldcpp/model.gguf', 1024 * 1024 * 8)
+        download('https://huggingface.co/Lewdiculous/L3-8B-Stheno-v3.3-32K-GGUF-IQ-Imatrix/resolve/main/${model_name}', config_dir + 'koboldcpp/model.gguf', 1024 * 1024 * 8)
         stream_enable()
         stream('koboldcpp installed! Please run \"koboldcpp\" again to start the app.')
         stream_disable()
@@ -115,7 +115,7 @@ if (ans = null) || (ans != '_close') {
       talk('Starting koboldcpp on CPU, please wait...')
     } else
     if (ans = 'GPU') {
-      exec = koboldcpp_executable + ' \"${config_dir}koboldcpp/model.gguf\" --useclblast 0 0 --smartcontext --gpulayers 24 --contextsize 8192 --skiplauncher'
+      exec = koboldcpp_executable + ' \"${config_dir}koboldcpp/model.gguf\" --useclblast 0 0 --smartcontext --gpulayers --flashattention 24 --contextsize 8192 --skiplauncher'
       talk('Starting koboldcpp on GPU, please wait...')
     } else
     if (ans = 'Uninstall koboldcpp') {
