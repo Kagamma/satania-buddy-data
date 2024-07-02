@@ -1041,18 +1041,20 @@ const Chat = ({
   const messagesRef = useRef(null);
 
   const handleGetInitInfos = () => {
-    Promise.all([webuiCall().call('character_skin_get', ''), webuiCall().call('character_name_get', '')]).then(ress => {
+    Promise.all([
+      webuiCall().call('character_skin_get', ''),
+      webuiCall().call('character_name_get', ''),
+      webuiCall().call('chat_service_list_get', ''),
+      webuiCall().call('chat_service_get', ''),
+    ]).then(ress => {
       setCharacter({
         skin: ress[0],
         name: ress[1],
       });
+      setServiceList(['None', ...ress[2].split(';').filter(a => a !== '')]);
+      setServiceValue(ress[3]);
     });
-    webuiCall().call('chat_service_list_get', '').then(res => {
-      setServiceList(['None', ...res.split(';').filter(a => a !== '')]);
-    });
-    webuiCall().call('chat_service_get', '').then(res => {
-      setServiceValue(res);
-    });
+    //
     webuiCall().call('chat_history_get', '').then(res => {
       setChatHistory(JSON.parse(res));
     });
@@ -1067,18 +1069,19 @@ const Chat = ({
       handleGetInitInfos();
     } else {
       setTimeout(() => {
-        Promise.all([webuiCall().call('character_skin_get', ''), webuiCall().call('character_name_get', '')]).then(ress => {
+        Promise.all([
+          webuiCall().call('character_skin_get', ''),
+          webuiCall().call('character_name_get', ''),
+          webuiCall().call('chat_service_list_get', ''),
+          webuiCall().call('chat_service_get', ''),
+        ]).then(ress => {
           setCharacter({
             skin: ress[0],
             name: ress[1],
           });
+          setServiceList(['None', ...ress[2].split(';').filter(a => a !== '')]);
+          setServiceValue(ress[3]);
           document.title = 'Chat with ' + ress[1] + '!';
-        });
-        webuiCall().call('chat_service_list_get', '').then(res => {
-          setServiceList(['None', ...res.split(';').filter(a => a !== '')]);
-        });
-        webuiCall().call('chat_service_get', '').then(res => {
-          setServiceValue(res);
         });
       }, 1000);
     }
