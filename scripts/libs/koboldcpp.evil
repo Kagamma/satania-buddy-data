@@ -22,6 +22,8 @@ fn koboldcpp_settings_from_local_flag(flag_name, settings) {
  * @params.description:
      - token_start: Self-explain
      - token_end: Self-explain
+     - token_header_start: Put this before character name
+     - token_header_end: Put this after character name
      - charname: Character's name
      - persona: Self-explain
      - personality: Self-explain
@@ -34,6 +36,8 @@ fn koboldcpp_request(params) {
   //
   token_start = string(params.description.token_start)
   token_end = string(params.description.token_end)
+  token_header_start = string(params.description.token_header_start)
+  token_header_end = string(params.description.token_header_end)
 
   fn name_process(s) {
     result = string_replace_ignorecase(s, '{{char}}', params.description.charname)
@@ -66,21 +70,21 @@ fn koboldcpp_request(params) {
     //  chat += base
     //}
     if (it.name = params.description.charname) {
-      chat += reminder + token_start + it.name + ': ' + it.message + '\n' + token_end
+      chat += reminder + token_start + token_header_start + it.name + ': ' + token_header_end + it.message + '\n' + token_end
     } else
     if (it.name = username) {
-      chat += token_start + it.name + ': ' + it.message + '\n' + token_end
+      chat += token_start + token_header_start + it.name + ': ' + token_header_end + it.message + '\n' + token_end
     }
   }
 
   // Adds default stoppers
-  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', '[/INST]', token_start, token_end]
+  params.stoppers = params.stoppers + [username + ':', '\n' + username + ' ', charname + ':', '\n<END>\n', '\n</END>\n', '\n###', '\nUser', '\n---', '\nContinue conversation', '\nEnd conversation', '[/INST]', token_start, token_end, token_header_start, token_header_end]
 
   // Construct prompt
   if last_user = params.description.charname
-    chat += token_start + params.description.charname + ':'
+    chat += token_start + token_header_start + params.description.charname + ':' + token_header_end
   else
-    chat += reminder + token_start + params.description.charname + ':'
+    chat += reminder +token_start + token_header_start + params.description.charname + ':' + token_header_end
   base += '\n\nStart conversation:\n'
   // Likely not contain greeting message
   if length(list) == 0 {
