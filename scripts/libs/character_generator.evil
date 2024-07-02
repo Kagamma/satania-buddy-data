@@ -99,16 +99,23 @@ fn _greeting() {
   return (\"${char_name}: ${greeting}\")
 }
 
+token_start = '<|eot_id|>'
+token_end = ''
+token_header_start = '<|start_header_id|>'
+token_header_end = '<|end_header_id|>'
+
 description = [
-  token_start: '<|im_start|>',
-  token_end: '<|im_end|>',
+  token_start: token_start,
+  token_end: token_end,
+  token_header_start: token_header_start,
+  token_header_end: token_header_end,
   charname: \"${char_name}\",
   persona: \"${char_persona}\",
   personality: \"${personality}\",
   scenario: \"${world_scenario}\",
   example_dialogue: \"${example_dialogue}\",
   reminder: '\\n### Next is ${char_name}\\'s response. Stay in character, ${char_name} must put expressiveness, actions, and thoughts in asterisks. Do not reply as ' + username + '.\\n',
-  greeting: \"<|im_start|>\" + _greeting() + \"<|im_end|>\",
+  greeting: token_start + _greeting() + token_end,
 ]
 
 api = 'http://localhost:5000/v1/completions'
@@ -146,16 +153,23 @@ fn _greeting() {
   return (\"${char_name}: ${greeting}\")
 }
 
+token_start = '<|eot_id|>'
+token_end = ''
+token_header_start = '<|start_header_id|>'
+token_header_end = '<|end_header_id|>'
+
 description = [
-  token_start: '<|im_start|>',
-  token_end: '<|im_end|>',
+  token_start: token_start,
+  token_end: token_end,
+  token_header_start: token_header_start,
+  token_header_end: token_header_end,
   charname: \"${char_name}\",
   persona: \"${char_persona}\",
   personality: \"${personality}\",
   scenario: \"${world_scenario}\",
   example_dialogue: \"${example_dialogue}\",
   reminder: '\\n### Next is ${char_name}\\'s response. Stay in character, ${char_name} must put expressiveness, actions, and thoughts in asterisks. Do not reply as ' + username + '.\\n',
-  greeting: \"<|im_start|>\" + _greeting() + \"<|im_end|>\",
+  greeting: token_start + _greeting() + token_end,
 ]
 
 api = 'http://localhost:5001/api/v1/generate'
