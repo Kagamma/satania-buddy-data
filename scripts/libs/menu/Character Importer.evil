@@ -43,7 +43,7 @@ if (typeof(ans) == 'map') {
       throw 'Error ${res.status} while getting character\'s JSON data!'
     }
     // Request for character's avatar
-    url_avatar = 'https://avatars.charhub.io/avatars/' + string(url_id) + '/tavern.png'
+    url_avatar = 'https://avatars.charhub.io/avatars/' + string(url_id) + '/chara_card_v2.png'
     id = http_fetch('GET', url_avatar, [], null)
     while !http_is_success(id) yield
     res = http_result_get(id, true)
