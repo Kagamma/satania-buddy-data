@@ -17,7 +17,7 @@ if os != 'windows' {
 // Check if koboldcpp and model exists
 config_dir = string_replace(fs_directory_config_get(), string_trim('\\ '), '/') // string_trim() is mainly to avoid highlighter bug
 model_name = 'L3-8B-Stheno-v3.2-Q4_K_M-imat.gguf'
-koboldcpp_version = 'v1.69'
+koboldcpp_version = 'v1.69.1'
 fs_directory_create(config_dir + 'koboldcpp')
 is_koboldcpp_exists = fs_file_exists(config_dir + koboldcpp_executable)
 is_model_exists = fs_file_exists(config_dir + 'koboldcpp/model.gguf')
