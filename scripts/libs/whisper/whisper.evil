@@ -1,4 +1,7 @@
-import 'whisper.dll' {
+WHISPER_SAMPLING_GREEDY = 0
+WHISPER_SAMPLING_BEAM_SEARCH = 1
+
+import 'libwhisper.dll' {
   fn whisper_init_from_file(buffer): buffer
   fn whisper_full_default_params_by_ref(u32): buffer
   fn whisper_full(buffer, buffer, buffer, i32): i32
