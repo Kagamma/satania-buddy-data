@@ -6,7 +6,7 @@ import 'libwhisper.dll' {
   fn whisper_full_default_params_by_ref(u32): buffer
   fn whisper_full(buffer, buffer, buffer, i32): i32
   fn whisper_full_n_segments(buffer): i32
-  fn whisper_full_get_segment_text(buffer): i32
+  fn whisper_full_get_segment_text(buffer, i32): buffer
   fn whisper_free(buffer): void
   fn whisper_free_params(buffer): void
 }
