@@ -19,6 +19,9 @@ if (typeof(ans) == 'map') {
   char_avatar = fs_directory_config_get() + '_avatar.png'
 
   url_root = 'https://chub.ai'
+  if string_find(url, 'www.characterhub.org') >= 0 {
+    url_root = 'https://www.characterhub.org'
+  } else
   if string_find(url, 'characterhub.org') >= 0 {
     url_root = 'https://characterhub.org'
   }
