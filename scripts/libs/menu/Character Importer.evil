@@ -2,8 +2,8 @@ using 'data/scripts/libs/character_generator.evil'
 
 ask('Import character from chub.ai', '
   Import character from <a href="website_legacy">characterhub.org</a> or <a href="website">chub.ai</a><br /><br />
-  <input name="url" value="" style="width:100%" placeholder="Paste character URL here" />
-', 500, 150)
+  <input name="url" value="" style="width:100%" placeholder="Paste character URL here (ex: https://characterhub.org/characters/stereotyp1cal/Nobeta)" />
+', 550, 150)
 ans = answer()
 
 if (ans == 'website') {
