@@ -1,7 +1,7 @@
 using 'data/scripts/libs/character_generator.evil'
 
 ask('Import character from chub.ai', '
-  Import character from <a href="website">chub.ai</a><br /><br />
+  Import character from <a href="website_legacy">characterhub.org</a> or <a href="website">chub.ai</a><br /><br />
   <input name="url" value="" style="width:100%" placeholder="Paste character URL here" />
 ', 500, 150)
 ans = answer()
@@ -9,17 +9,25 @@ ans = answer()
 if (ans == 'website') {
   http_open('https://chub.ai/')
 } else
+if (ans == 'website_legacy') {
+  http_open('https://www.characterhub.org/')
+} else
 if (typeof(ans) == 'map') {
   url = string_trim(ans.url)
   char_id = null
   char_json = null
   char_avatar = fs_directory_config_get() + '_avatar.png'
 
-  if (string_find(url, 'chub.ai/characters/') >= 0) {
+  url_root = 'https://chub.ai'
+  if string_find(url, 'characterhub.org') >= 0 {
+    url_root = 'https://characterhub.org'
+  }
+
+  if (string_find(url, 'chub.ai/characters/') >= 0) || (string_find(url, 'characterhub.org/characters/') >= 0) {
     talk('Importing...')
     // Request for character's ID
-    url_id = string_replace(url, 'https://chub.ai/characters/', '')
-    url_id = string_replace(url_id, 'https://www.chub.ai/characters/', '')
+    url_id = string_replace(url, '${url_root}/characters/', '')
+    url_id = string_replace(url_id, '${url_root}/characters/', '')
     url_api = 'https://api.chub.ai/api/characters/' + url_id + '?full=true'
     id = http_fetch('GET', url_api, [], null)
     while !http_is_success(id) yield
