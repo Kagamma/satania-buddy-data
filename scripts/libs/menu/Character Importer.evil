@@ -30,7 +30,6 @@ if (typeof(ans) == 'map') {
     talk('Importing...')
     // Request for character's ID
     url_id = string_replace(url, '${url_root}/characters/', '')
-    url_id = string_replace(url_id, '${url_root}/characters/', '')
     url_api = 'https://api.chub.ai/api/characters/' + url_id + '?full=true'
     id = http_fetch('GET', url_api, [], null)
     while !http_is_success(id) yield
