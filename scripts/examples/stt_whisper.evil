@@ -1,0 +1,73 @@
+using 'data/scripts/libs/whisper/whisper.evil'
+
+c = whisper_init_from_file('data/nn/whisper.cpp/ggml-tiny.en-q5_1.bin')
+p = whisper_full_default_params_by_ref(1)
+
+f = fs_file_read_binary('anime.wav')
+
+chunkId = chr(buffer_u8_get(f)) + chr(buffer_u8_get(f + 1)) + chr(buffer_u8_get(f + 2)) + chr(buffer_u8_get(f + 3))
+f += 4
+chunkSize = buffer_u32_get(f)
+f += 4
+chunkFormat = chr(buffer_u8_get(f)) + chr(buffer_u8_get(f + 1)) + chr(buffer_u8_get(f + 2)) + chr(buffer_u8_get(f + 3))
+f += 4
+
+if (chunkFormat != 'WAVE')
+  return
+
+chunkId1 = chr(buffer_u8_get(f)) + chr(buffer_u8_get(f + 1)) + chr(buffer_u8_get(f + 2)) + chr(buffer_u8_get(f + 3))
+f += 4 + 4
+audioFormat = buffer_u16_get(f)
+f += 2
+numChannels = buffer_u16_get(f)   
+f += 2
+sampleRate = buffer_u32_get(f)
+f += 4 + 4 + 2
+bitsPerSample = buffer_u16_get(f)
+f += 2
+// Skip to 'data' chunk...
+while true {
+  text = chr(buffer_u8_get(f)) + chr(buffer_u8_get(f + 1)) + chr(buffer_u8_get(f + 2)) + chr(buffer_u8_get(f + 3))
+  if (text == 'data')
+    break
+  f += 1
+}
+chunkDataId = chr(buffer_u8_get(f)) + chr(buffer_u8_get(f + 1)) + chr(buffer_u8_get(f + 2)) + chr(buffer_u8_get(f + 3))
+f += 4
+chunkDataSize = buffer_u32_get(f)
+f += 4
+                       
+writeln('---')
+writeln('chunkId: ', chunkId)
+writeln('chunkSize: ', chunkSize)
+writeln('chunkFormat: ', chunkFormat)
+writeln('chunkId1: ', chunkId1)
+writeln('audioFormat: ', audioFormat, ': ', audioFormat == 1)
+writeln('numChannels: ', numChannels, ': ', numChannels == 1)
+writeln('sampleRate: ', sampleRate, ': ', sampleRate == 16000)
+writeln('bitsPerSample: ', bitsPerSample)
+writeln('chunkDataId: ', chunkDataId)  
+writeln('chunkDataSize: ', chunkDataSize)
+
+dataCount = chunkDataSize / (bitsPerSample / 8)
+
+b = buffer_create(dataCount * 4)
+for i = 0 to dataCount - 1 {
+  buffer_f32_set(b + i * 4, buffer_i16_get(f + i * 2) / 32768)
+}
+
+t = ticks()
+whisper_full(c, p, b, dataCount)
+ns = whisper_full_n_segments(c)
+
+s = ''
+for i = 0 to ns - 1 {
+  s += buffer_to_string(whisper_full_get_segment_text(c, i)) + ' '
+}
+
+writeln('RESULT: ', s);
+writeln('Time: ', ticks() - t, 'ms')
+
+whisper_free_params(p)
+whisper_free(c)
+
