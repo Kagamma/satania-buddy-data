@@ -582,7 +582,7 @@ const ChatItem = ({
     }
   }
   return [
-    showConfirmDeleteModal ? e(Modal, {
+    showConfirmDeleteModal && e(Modal, {
       visible: showConfirmDeleteModal,
       title: 'Confirmation',
       body: 'Do you want to delete this message?',
@@ -596,7 +596,7 @@ const ChatItem = ({
           'No',
         ]),
       ]
-    }) : null,
+    }),
     chatItemComponentCache[guid],
   ];
 };
@@ -1257,13 +1257,13 @@ const Chat = ({
   }
   return e('div', { className: 'app-container' }, [
     e('div', { className: 'app-content' }, [
-      showSidebarLeft ? e(SideBarLeft, {
+      showSidebarLeft && e(SideBarLeft, {
         chatHistory: helperConvertChatHistoryToPlainText(chatHistory),
         onClose: () => setShowSidebarLeft(false),
         onReload: handleReload,
-      }) : null,
+      }),
       e('div', { className: 'app-content-sub' }, renderLayout()),
-      showSidebarRight ? e(SideBarRight, { onClose: () => setShowSidebarRight(false) }) : null,
+      showSidebarRight && e(SideBarRight, { onClose: () => setShowSidebarRight(false) }),
     ]),
     e('div', { className: 'app-commands' }, [
       e('div', { className: 'app-commands-left' }, [
