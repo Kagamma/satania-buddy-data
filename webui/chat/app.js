@@ -14,7 +14,7 @@ const EditMode = {
   HISTORY: 2,
 };
 
-const CHAT_DISPLAY = 50;
+const CHAT_DISPLAY = 20;
 
 const webuiCall = () => {
   if (window.webui !== undefined) {
@@ -1032,6 +1032,7 @@ const Chat = ({
 }) => {
   const [refresh, setRefresh] = useState(0);
   const [page, setPage] = useState(0);
+  const [isPaging, setIsPaging] = useState(true);
   const [chatHistory, setChatHistory] = useState(null);
   const [chatInput, setChatInput] = useState('');
   const [serviceValue, setServiceValue] = useState('0');
@@ -1199,14 +1200,26 @@ const Chat = ({
   }
 
   renderChatMessages = () => {
-    const result = [];
-    for (let i = Math.max(0, chatHistory.length - CHAT_DISPLAY * (page + 1)); i < chatHistory.length - CHAT_DISPLAY * page; i += 1) {
-      result.push(e(ChatItem, {
-        ...chatHistory[i],
-        onMessageChange: handleSingleMessageChange,
-        onMessageDelete: handleSingleMessageDelete,
-        onRenderChange: () => setTimeout(() => messagesRef.current.scrollTop = messagesRef.current.scrollHeight, 100),
-      }));
+    let result = null;
+    if (isPaging) {
+      result = [];
+      for (let i = Math.max(0, chatHistory.length - CHAT_DISPLAY * (page + 1)); i < chatHistory.length - CHAT_DISPLAY * page; i += 1) {
+        result.push(e(ChatItem, {
+          ...chatHistory[i],
+          onMessageChange: handleSingleMessageChange,
+          onMessageDelete: handleSingleMessageDelete,
+          onRenderChange: () => setTimeout(() => messagesRef.current.scrollTop = messagesRef.current.scrollHeight, 100),
+        }));
+      }
+    } else {
+      result = [
+        ...chatHistory.map(item => (e(ChatItem, {
+          ...item,
+          onMessageChange: handleSingleMessageChange,
+          onMessageDelete: handleSingleMessageDelete,
+          onRenderChange: () => setTimeout(() => messagesRef.current.scrollTop = messagesRef.current.scrollHeight, 100),
+        })))
+      ];
     }
     if (typing) {
       result.push(e('div', { className: 'chat-item-container' }, [
@@ -1225,8 +1238,11 @@ const Chat = ({
   };
 
   renderPaging = () => {
+    if (!isPaging) {
+      return null;
+    }
     result = [];
-    const numberOfPages = Math.floor(chatHistory.length / CHAT_DISPLAY) + 1;
+    const numberOfPages = Math.floor(Math.max(0, chatHistory.length - 1) / CHAT_DISPLAY) + 1;
 
     if (numberOfPages > 1) {
       result.push(e('div', { className: 'fa fa-angle-double-left pointer', style: { visibility: !(page > 0) && 'hidden' }, onClick: () => setPage(0) }));
@@ -1291,6 +1307,10 @@ const Chat = ({
         e('select', { className: 'me-2', value: theme, onChange: handleThemeChange }, Themes.map(item => {
           return e('option', { value: item.value }, item.key);
         })),
+        [
+          e('input', { className: 'me-2', id: 'is-paging', type: 'checkbox', checked: isPaging, onChange: () => setIsPaging(!isPaging) }),
+          e('label', { style: { color: 'var(--color-text)' }, for: 'is-paging' }, 'Pagination'),
+        ],
       ]),
       e('div', { className: 'app-commands-right' }, [
         e('select', { className: 'me-2', value: serviceValue, disabled: typing, onChange: handleServiceChange }, serviceList.map((item, index) => {
