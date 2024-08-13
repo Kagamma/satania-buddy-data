@@ -1245,11 +1245,11 @@ const Chat = ({
     const numberOfPages = Math.floor(Math.max(0, chatHistory.length - 1) / CHAT_DISPLAY) + 1;
 
     if (numberOfPages > 1) {
-      result.push(e('div', { className: 'fa fa-angle-double-left pointer', style: { visibility: !(page > 0) && 'hidden' }, onClick: () => setPage(0) }));
-      result.push(e('div', { className: 'fa fa-angle-left pointer', style: { visibility: !(page > 0) && 'hidden' }, onClick: () => setPage(page - 1) }));
+      result.push(e('div', { className: 'fa fa-angle-double-left pointer', style: { visibility: !(page > 0) && 'hidden' }, title: 'First page', onClick: () => setPage(0) }));
+      result.push(e('div', { className: 'fa fa-angle-left pointer', style: { visibility: !(page > 0) && 'hidden' }, title: 'Previous', onClick: () => setPage(page - 1) }));
       result.push(e('div', {}, `${page + 1} / ${numberOfPages}`));
-      result.push(e('div', { className: 'fa fa-angle-right pointer', style: { visibility: !(page < numberOfPages - 1) && 'hidden' }, onClick: () => setPage(page + 1) }));
-      result.push(e('div', { className: 'fa fa-angle-double-right pointer', style: { visibility: !(page < numberOfPages - 1) && 'hidden' }, onClick: () => setPage(numberOfPages - 1) }));
+      result.push(e('div', { className: 'fa fa-angle-right pointer', style: { visibility: !(page < numberOfPages - 1) && 'hidden' }, title: 'Next', onClick: () => setPage(page + 1) }));
+      result.push(e('div', { className: 'fa fa-angle-double-right pointer', style: { visibility: !(page < numberOfPages - 1) && 'hidden' }, title: 'Last page', onClick: () => setPage(numberOfPages - 1) }));
     }
 
     return result;
