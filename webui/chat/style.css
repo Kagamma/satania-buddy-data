@@ -271,6 +271,10 @@ input {
   width: 40% !important;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .btn:hover {
   opacity: 0.75;
 }
@@ -406,7 +410,7 @@ input {
 }
 
 .chat-messages-container {
-  height: calc(100% - 160px);
+  height: calc(100% - 180px);
   overflow-y: scroll;
 }
 
@@ -480,6 +484,19 @@ input {
         font-style: italic;
         color: var(--color-text);
       }
+
+.chat-paging-container {
+  height: 20px;
+  overflow-y: none;
+  display: flex;
+  justify-content: center;
+  color: var(--color-text);
+  align-items: baseline;
+}
+  .chat-paging-container > * {
+    margin-right: 4px;
+    margin-left: 4px;
+  }
 
 .chat-input-container {
   height: 160px;

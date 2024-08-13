@@ -14,6 +14,8 @@ const EditMode = {
   HISTORY: 2,
 };
 
+const CHAT_DISPLAY = 50;
+
 const webuiCall = () => {
   if (window.webui !== undefined) {
     return webui;
@@ -1029,6 +1031,7 @@ const Chat = ({
   firstTime,
 }) => {
   const [refresh, setRefresh] = useState(0);
+  const [page, setPage] = useState(0);
   const [chatHistory, setChatHistory] = useState(null);
   const [chatInput, setChatInput] = useState('');
   const [serviceValue, setServiceValue] = useState('0');
@@ -1196,16 +1199,15 @@ const Chat = ({
   }
 
   renderChatMessages = () => {
-    const result = [
-      ...chatHistory.map(item => {
-        return e(ChatItem, {
-          ...item,
-          onMessageChange: handleSingleMessageChange,
-          onMessageDelete: handleSingleMessageDelete,
-          onRenderChange: () => setTimeout(() => messagesRef.current.scrollTop = messagesRef.current.scrollHeight, 100),
-        });
-      }),
-    ];
+    const result = [];
+    for (let i = Math.max(0, chatHistory.length - CHAT_DISPLAY * (page + 1)); i < chatHistory.length - CHAT_DISPLAY * page; i += 1) {
+      result.push(e(ChatItem, {
+        ...chatHistory[i],
+        onMessageChange: handleSingleMessageChange,
+        onMessageDelete: handleSingleMessageDelete,
+        onRenderChange: () => setTimeout(() => messagesRef.current.scrollTop = messagesRef.current.scrollHeight, 100),
+      }));
+    }
     if (typing) {
       result.push(e('div', { className: 'chat-item-container' }, [
         e('div', { className: 'chat-item-avatar-container', style: { visibility: 'hidden' } } ),
@@ -1219,6 +1221,21 @@ const Chat = ({
         ),
       ]));
     }
+    return result;
+  };
+
+  renderPaging = () => {
+    result = [];
+    const numberOfPages = Math.floor(chatHistory.length / CHAT_DISPLAY) + 1;
+
+    if (numberOfPages > 1) {
+      result.push(e('div', { className: 'fa fa-angle-double-left pointer', style: { visibility: !(page > 0) && 'hidden' }, onClick: () => setPage(0) }));
+      result.push(e('div', { className: 'fa fa-angle-left pointer', style: { visibility: !(page > 0) && 'hidden' }, onClick: () => setPage(page - 1) }));
+      result.push(e('div', {}, `${page + 1} / ${numberOfPages}`));
+      result.push(e('div', { className: 'fa fa-angle-right pointer', style: { visibility: !(page < numberOfPages - 1) && 'hidden' }, onClick: () => setPage(page + 1) }));
+      result.push(e('div', { className: 'fa fa-angle-double-right pointer', style: { visibility: !(page < numberOfPages - 1) && 'hidden' }, onClick: () => setPage(numberOfPages - 1) }));
+    }
+
     return result;
   };
 
@@ -1248,6 +1265,7 @@ const Chat = ({
   renderLayout = () => {
     return e('div', { className: 'chat-container' }, [
       e('div', { className: 'd-flex flex-column w-100 chat-messages-container', ref: messagesRef }, renderChatMessages()),
+      e('div', { className: 'w-100 chat-paging-container' }, renderPaging()),
       e('div', { className: 'w-100 chat-input-container' }, renderChatInput()),
     ]);
   };
