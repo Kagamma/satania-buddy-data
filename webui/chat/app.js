@@ -1309,7 +1309,7 @@ const Chat = ({
         })),
         [
           e('input', { className: 'me-2', id: 'is-paging', type: 'checkbox', checked: isPaging, onChange: () => setIsPaging(!isPaging) }),
-          e('label', { style: { color: 'var(--color-text)' }, for: 'is-paging' }, 'Pagination'),
+          e('label', { style: { color: 'var(--color-text)' }, for: 'is-paging', title: 'Enable / Disable pagination (20 messages / page)' }, 'Pagination'),
         ],
       ]),
       e('div', { className: 'app-commands-right' }, [
