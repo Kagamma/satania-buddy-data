@@ -36,7 +36,7 @@ console.log('Hello, World!')
   greeting: token_start + _greeting() + token_end,
 ]
 
-api = 'http://localhost:5001/api/v1/generate'
+server = 'http://localhost:5001'
 
 /*settings = [
   'n': 1,
@@ -75,11 +75,11 @@ stoppers = []
 // Load settings from local flag. Make sure the flag has the same name as this file
 settings = koboldcpp_settings_from_local_flag('koboldcpp (programmer).evil', settings)
 if settings.server != null {
-  api = settings.server + '/api/v1/generate'
+  server = settings.server
 }
 
 koboldcpp_request([
-  api: api,
+  server: server,
   settings: settings,
   stoppers: stoppers,
   description: description

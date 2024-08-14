@@ -5,6 +5,25 @@ fn _service() {
   return ("koboldcpp")
 }
 
+// This function is executed by chat window, to stop the current chat generation
+fn _stop() {
+  params = flag_global_get('___koboldcpp_params')
+  // Make sure params.server is available, for backward-compatible
+  if typeof(params.server) == 'string' {
+    data = [
+      genkey: 'KCPP2342',
+    ]
+    result = http_fetch('POST', params.server + '/api/extra/abort', [], data)
+    t = ticks()
+    while http_is_success(result) = false { // We do not yield here, but wait for 5s instead
+      if (t + 5000) < ticks() {
+        return
+      }
+    }
+    res = http_result_get(result)
+  }
+}
+
 // Load settings from local flag. Make sure the flag has the same name as this file
 fn koboldcpp_settings_from_local_flag(flag_name, settings) {
   result = settings
@@ -33,6 +52,7 @@ fn koboldcpp_settings_from_local_flag(flag_name, settings) {
      - reminder: Text that will be put at the start of each satania's message.
  */
 fn koboldcpp_request(params) {
+  flag_global_set('___koboldcpp_params', params)
   //
   token_start = string(params.description.token_start)
   token_end = string(params.description.token_end)
@@ -106,7 +126,13 @@ fn koboldcpp_request(params) {
     eos = false
     params.settings.prompt = base + output
 
-    result = http_fetch('POST', params.api, [], params.settings)
+    // We provide backward-compatible for old koboldcpp script that rely on "api" field
+    // TODO: Deprecate in the future
+    api = params.api
+    if typeof(api) != 'string'
+      api = params.server + '/api/v1/generate'
+
+    result = http_fetch('POST', api, [], params.settings)
     while http_is_success(result) = false yield
     res = http_result_get(result)
 
@@ -165,7 +191,7 @@ fn koboldcpp_request(params) {
         stream(s)
       }
       if i > 0 {
-        // We do not need to keep last output, set to null so that gc can collect its used memory
+        // We do not need to keep last output, set to null so that gc can collect used memory
         outputs[i - 1] = null
       }
     }

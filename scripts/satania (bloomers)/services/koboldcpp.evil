@@ -36,7 +36,7 @@ ${token_start}${token_header_start}{{char}}:${token_header_end} *Giggles* Homewo
   greeting: token_start + _greeting() + token_end,
 ]
 
-api = 'http://localhost:5001/api/v1/generate'
+server = 'http://localhost:5001'
 
 settings = [
   'n': 1,
@@ -57,13 +57,13 @@ settings = [
 stoppers = []
 
 // Load settings from local flag. Make sure the flag has the same name as this file
-settings = koboldcpp_settings_from_local_flag('koboldcpp (chat).evil', settings)
+settings = koboldcpp_settings_from_local_flag('koboldcpp.evil', settings)
 if settings.server != null {
-  api = settings.server + '/api/v1/generate'
+  api = settings.server
 }
 
 koboldcpp_request([
-  api: api,
+  server: server,
   settings: settings,
   stoppers: stoppers,
   description: description
