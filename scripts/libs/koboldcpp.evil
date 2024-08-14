@@ -7,7 +7,7 @@ fn _service() {
 
 // This function is executed by chat window, to stop the current chat generation
 fn _stop() {
-  params = flag_global_get('___koboldcpp_params')
+  params = get('___koboldcpp_params')
   // Make sure params.server is available, for backward-compatible
   if typeof(params.server) == 'string' {
     data = [
@@ -15,12 +15,13 @@ fn _stop() {
     ]
     result = http_fetch('POST', params.server + '/api/extra/abort', [], data)
     t = ticks()
-    while http_is_success(result) = false { // We do not yield here, but wait for 5s instead
-      if (t + 5000) < ticks() {
+    while http_is_success(result) = false { // We do not yield here, but wait for 2s instead
+      if (t + 2000) < ticks() {
         return
       }
     }
-    res = http_result_get(result)
+    res = http_result_get(result)  
+    writeln(res)
   }
 }
 
@@ -52,7 +53,7 @@ fn koboldcpp_settings_from_local_flag(flag_name, settings) {
      - reminder: Text that will be put at the start of each satania's message.
  */
 fn koboldcpp_request(params) {
-  flag_global_set('___koboldcpp_params', params)
+  set('___koboldcpp_params', params)
   //
   token_start = string(params.description.token_start)
   token_end = string(params.description.token_end)

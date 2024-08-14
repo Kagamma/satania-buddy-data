@@ -59,7 +59,7 @@ stoppers = []
 // Load settings from local flag. Make sure the flag has the same name as this file
 settings = koboldcpp_settings_from_local_flag('koboldcpp.evil', settings)
 if settings.server != null {
-  api = settings.server
+  server = settings.server
 }
 
 koboldcpp_request([
