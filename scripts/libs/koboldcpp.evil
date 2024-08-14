@@ -11,12 +11,12 @@ fn _stop() {
   // Make sure params.server is available, for backward-compatible
   if typeof(params.server) == 'string' {
     data = [
-      genkey: 'KCPP2342',
+      genkey: params.settings.genkey,
     ]
     result = http_fetch('POST', params.server + '/api/extra/abort', [], data)
     t = ticks()
-    while http_is_success(result) = false { // We do not yield here, but wait for 2s instead
-      if (t + 2000) < ticks() {
+    while http_is_success(result) = false { // We do not yield here, but wait for 1.5s instead
+      if (t + 1500) < ticks() {
         return
       }
     }
@@ -53,6 +53,9 @@ fn koboldcpp_settings_from_local_flag(flag_name, settings) {
      - reminder: Text that will be put at the start of each satania's message.
  */
 fn koboldcpp_request(params) {
+  // Set genkey
+  params.settings.genkey = 'SATANIA_BUDDY'
+  // Save params, to be retrieved by _stop() when needed
   set('___koboldcpp_params', params)
   //
   token_start = string(params.description.token_start)
