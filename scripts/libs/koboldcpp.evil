@@ -1,4 +1,5 @@
 using 'data/scripts/libs/bert/commands.evil'
+using 'data/scripts/libs/bert/emote.evil'
 
 // This function is executed by chat window, to read the type of service
 fn _service() {
@@ -32,6 +33,17 @@ fn koboldcpp_settings_from_local_flag(flag_name, settings) {
   if settings_from_flag != null {
     result = settings + json_parse(settings_from_flag)
   }
+}
+
+// Store the last text bubble
+last_text_bubble = ''
+
+fn emote_handling() {
+  current_text_bubble = chat_bubble_get()
+  result = current_text_bubble = last_text_bubble
+  last_text_bubble = current_text_bubble
+  writeln('Emote: ', emote_get(current_text_bubble))
+  // TODO: Emote handling goes here
 }
 
 /**
@@ -194,6 +206,7 @@ fn koboldcpp_request(params) {
         is_hold_for_codeblock = true
       } else {
         stream(s)
+        emote_handling()
       }
       if i > 0 {
         // We do not need to keep last output, set to null so that gc can collect used memory
@@ -208,4 +221,8 @@ fn koboldcpp_request(params) {
   }
   stream(string_trim(outputs[i + 1]))
   stream_disable()
+  // Perform emote handling for remaining bubble text if any
+  do {
+    wait(1)
+  } while emote_handling() != true
 }

@@ -318,6 +318,6 @@ fn emote_get(text) {
 }
 
 // How to use
-text = '*Satania wriggled her body in embarrassment*'
-writeln(emote_get(text))
+// text = '*Satania wriggled her body in embarrassment*'
+// writeln(emote_get(text))
 
