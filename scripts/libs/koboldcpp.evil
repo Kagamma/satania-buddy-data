@@ -36,7 +36,8 @@ fn koboldcpp_settings_from_local_flag(flag_name, settings) {
 
 /**
  * Make a request to koboldcpp API.
- * @params.api: koboldcpp's API endpoint
+ * @params.api: koboldcpp's API endpoint - DEPRECATED   
+ * @params.server: koboldcpp's URL
  * @params.settings: A map containts koboldcpp's configs
  * @params.stoppers: An array of stopping tokens
  * @params.description:
