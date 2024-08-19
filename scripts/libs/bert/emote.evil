@@ -254,15 +254,15 @@ fn emote_get(text) {
   }
 
   // Init bert and evaluate emotes beforehand
-  ctx = get('_emote_ctx')
+  ctx = get('___emote_ctx')
   if ctx == null {
     ctx = []
 
     ctx.list = EMOTE_LIST
-    ctx.bert_ctx = get('_bert_ctx')
+    ctx.bert_ctx = get('___bert_ctx')
     if !ctx.bert_ctx {
       ctx.bert_ctx = bert_load_from_file(BERT_MODEL)
-      set('_bert_ctx', ctx.bert_ctx)
+      set('___bert_ctx', ctx.bert_ctx)
     }
 
     params = buffer_create(ggml_init_params_t.SIZE)
@@ -284,7 +284,7 @@ fn emote_get(text) {
       item.embedding = buffer_create(ctx.E_bytes)
       eval(ctx, item.embedding, item.text)
     }
-    set('_emote_ctx', ctx)
+    set('___emote_ctx', ctx)
   }
   //
   result = null

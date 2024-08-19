@@ -33,7 +33,7 @@ fn commands_check(text) {
     score: -1,
   ]
 
-  ctx = get('_commands_ctx')
+  ctx = get('___commands_ctx')
   if ctx == null {
     ctx = []                   
     // Load bert
@@ -55,7 +55,7 @@ fn commands_check(text) {
     ctx.tokens = buffer_create(ctx.N)
     ctx.n_tokens = buffer_create(4)
 
-    set('_commands_ctx', ctx)
+    set('___commands_ctx', ctx)
   }
 
   commands_path = fs_directory_config_get() + 'data/scripts/' + character + '/commands.json'
