@@ -1,4 +1,4 @@
-using 'data/scripts/libs/whisper/whisper.evil'
+using 'libs/whisper/whisper.evil'
 
 c = whisper_init_from_file('data/nn/whisper.cpp/ggml-tiny.en-q5_1.bin')
 p = whisper_full_default_params_by_ref(1)

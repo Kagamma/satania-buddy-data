@@ -1,5 +1,5 @@
-using 'data/scripts/libs/weather.evil'
-using 'data/scripts/libs/ip.evil'
+using 'libs/weather.evil'
+using 'libs/ip.evil'
 
 units = 'metric'
 api_key = 'b97d0e1a370bd2542e2ad62a17fc3d49'

@@ -1,4 +1,4 @@
-using 'data/scripts/libs/4chan.evil'
+using 'libs/4chan.evil'
 using 'libs/animations.evil'
 
 anim_idle()

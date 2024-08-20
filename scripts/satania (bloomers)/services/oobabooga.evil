@@ -1,6 +1,6 @@
 // Based on: https://chub.ai/characters/johnkirks345/satania-f382f7ef
 
-using 'data/scripts/libs/oobabooga.evil'
+using 'libs/oobabooga.evil'
 
 // This function is executed by chat window, to read greeting string
 // Note that it cannot read other global variables's default values

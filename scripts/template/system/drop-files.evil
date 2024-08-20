@@ -1,3 +1,3 @@
-using 'data/scripts/libs/drag_drop.evil'
+using 'libs/drag_drop.evil'
 
 drag_drop()

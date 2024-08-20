@@ -2,7 +2,7 @@ sprite_startup_position_on_taskbar = null
 
 #require windows // Only load the below code if OS is windows
 
-using 'data/scripts/libs/windows/winuser.evil'
+using 'libs/windows/winuser.evil'
 
 /**
  * Put the sprite on top right of taskbar.

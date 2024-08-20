@@ -1,6 +1,6 @@
-using 'data/scripts/libs/sprites.evil'
-using 'data/scripts/libs/reminder.evil'
-using 'data/scripts/libs/email.evil'
+using 'libs/sprites.evil'
+using 'libs/reminder.evil'
+using 'libs/email.evil'
 using 'libs/animations.evil'
 
 CHECK_EMAIL_INTERVAL = 300000 // 5 minutes

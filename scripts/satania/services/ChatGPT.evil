@@ -1,4 +1,4 @@
-using 'data/scripts/libs/chatgpt.evil'
+using 'libs/chatgpt.evil'
 
 key = '<YOUR SECRET KEY>'
 

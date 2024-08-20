@@ -1,5 +1,5 @@
-using 'data/scripts/libs/ggml/ggml.evil'
-using 'data/scripts/libs/bert/bert.evil'
+using 'libs/ggml/ggml.evil'
+using 'libs/bert/bert.evil'
 
 EMOTE_TOKEN_TEXT = 0
 EMOTE_TOKEN_BRACKET_OPEN = 1

@@ -1,4 +1,4 @@
-using 'data/scripts/libs/common/download.evil'
+using 'libs/common/download.evil'
 
 fn koboldcpp_terminate(process_id) { 
   process_terminate(process_id)
@@ -40,7 +40,7 @@ if (!is_koboldcpp_exists) || (!is_model_exists) {
   ans = answer()
   if (ans = 'Yes') {
     worker_create('koboldcpp', "
-      using 'data/scripts/libs/common/download.evil'
+      using 'libs/common/download.evil'
 
       config_dir = '${config_dir}'
       is_koboldcpp_exists = ${is_koboldcpp_exists}

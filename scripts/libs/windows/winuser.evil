@@ -1,6 +1,6 @@
 #require windows // Only load this file if the OS is windows
 
-using 'data/scripts/libs/common/ctypes.evil'
+using 'libs/common/ctypes.evil'
 
 TPOINT = [
   x: 0,

@@ -1,4 +1,4 @@
-using 'data/scripts/libs/koboldcpp.evil'
+using 'libs/koboldcpp.evil'
 
 // This function is executed by chat window, to read greeting string
 // Note that it cannot read other global variables's default values

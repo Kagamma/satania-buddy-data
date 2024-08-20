@@ -1,4 +1,4 @@
-using 'data/scripts/libs/bert/commands.evil'
+using 'libs/bert/commands.evil'
 
 // This function is executed by chat window, to read the type of service
 fn _service() {
