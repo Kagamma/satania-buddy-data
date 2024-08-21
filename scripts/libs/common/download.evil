@@ -79,7 +79,7 @@ fn download(url, save_as, chunk_size) {
   while http_is_success(id) = false yield
   headers = http_result_get(id).headers
   //
-  size = number(headers['content-length'])
+  size = number(string_trim(headers['content-length']))
   if save_as = ''
     throw 'Invalid file name: ${save_as}'
   save_as_part = save_as + '.tmp'
@@ -128,7 +128,7 @@ fn download(url, save_as, chunk_size) {
     }
     //
     download_display_progress_bar('dl_progress_bar', pos, size)
-    pos += number(part.headers['content-length'])
+    pos += number(string_trim(part.headers['content-length']))
   }
   // Delete the file if exists on disk
   if fs_file_exists(save_as)
