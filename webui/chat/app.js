@@ -1206,6 +1206,7 @@ const Chat = ({
       for (let i = Math.max(0, chatHistory.length - CHAT_DISPLAY * (page + 1)); i < chatHistory.length - CHAT_DISPLAY * page; i += 1) {
         result.push(e(ChatItem, {
           ...chatHistory[i],
+          key: chatHistory[i].guid,
           onMessageChange: handleSingleMessageChange,
           onMessageDelete: handleSingleMessageDelete,
           onRenderChange: () => setTimeout(() => messagesRef.current.scrollTop = messagesRef.current.scrollHeight, 100),
