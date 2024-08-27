@@ -943,7 +943,7 @@ const SideBarRight = ({
   const renderKoboldCppConfigs = e('div', {}, [
     e('h4', { className: 'w-100 text-center' }, 'koboldcpp'),
     e('table', { className: 'sidebar-right-slider-container' }, [
-      renderSliderItem('Max. Length', configValues.max_length, 1, 32768, 1, handleConfigIntValueChange('max_length')),
+      renderSliderItem('Max. Length', configValues.max_length, 1, 131072, 1, handleConfigIntValueChange('max_length')),
       renderSliderItem('Rep. Penalty', configValues.rep_pen, 1, 3, 0.01, handleConfigFloatValueChange('rep_pen')),
       renderSliderItem('Temperature', configValues.temperature, 0.0, 2, 0.01, handleConfigFloatValueChange('temperature')),
       renderSliderItem('DynaTemp', configValues.dynatemp_range, 0.0, 2, 0.01, handleConfigFloatValueChange('dynatemp_range')),
