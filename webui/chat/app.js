@@ -921,7 +921,7 @@ const SideBarRight = ({
         e('td', {},
           e('input', { className: 'form-range', type: 'range', value, min, max, step, onChange }),
         ),
-        e('td', { className: 'w-20' },
+        e('td', { className: 'w-25' },
           e('input', { className: 'w-100', type: 'number', value, step, onChange }),
         ),
       ]
