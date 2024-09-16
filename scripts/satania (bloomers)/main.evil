@@ -68,8 +68,12 @@ if is_silent() {
     if is_speech_to_text()
       continue
 
-    check_for_email()
-    check_for_reminder()
-    check_for_weather()
+    try {
+      check_for_email()
+      check_for_reminder()
+      check_for_weather()
+    } catch (e) {
+      writeln(e)
+    }
   }
 }
