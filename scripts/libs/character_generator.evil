@@ -243,7 +243,6 @@ fn ai_character_generator(json, avatar) {
     fs_file_copy(avatar, path_sprite + '/avatar.png')
   }
   // Generate services
-  ai_character_service_generator(json, 'oobabooga', path_script + '/services/oobabooga.evil')
   ai_character_service_generator(json, 'koboldcpp', path_script + '/services/koboldcpp.evil')
 }
 
