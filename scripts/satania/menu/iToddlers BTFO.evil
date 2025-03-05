@@ -1,14 +1,15 @@
-using 'libs/common/timers.evil'
+using 'libs/common/timers.evil'  
+using 'libs/animations.evil'
 
 if is_sow() {
   sprite_load('sit/skeleton.x3dv')
-  sprite_scale_set(0.1)
+  sprite_scale_set(SATANIA_SCALING_VALUE)
   sprite_animation_play('idle_1', true)
   sprite_animation_play('blink_loop', true)
   talk('iToddlers BTFO!!!')
 } else {
   sprite_load('idle/skeleton.x3dv')
-  sprite_scale_set(0.1)
+  sprite_scale_set(SATANIA_SCALING_VALUE)
   sprite_animation_play('btfo_talk', false)
   talk('iToddlers BTFO!!!')
   wait(1)
