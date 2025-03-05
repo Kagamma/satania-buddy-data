@@ -2,6 +2,7 @@ using 'libs/sprites.evil'
 using 'libs/reminder.evil'
 using 'libs/email.evil'
 using 'libs/animations.evil'
+using 'libs/common/timers.evil'
 
 CHECK_EMAIL_INTERVAL = 300000 // 5 minutes
 CHECK_REMINDER_INTERVAL = 600000 // 10 minutes

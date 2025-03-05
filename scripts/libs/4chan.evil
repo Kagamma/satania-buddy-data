@@ -1,3 +1,5 @@
+using 'libs/common/timers.evil'
+
 fn fourchan_display_archive(board) {
   status = http_fetch('GET', 'https://boards.4channel.org/' + board + '/archive', [], null)
   while http_is_success(status) = false yield

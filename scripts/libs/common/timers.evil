@@ -1,0 +1,6 @@
+fn wait(s) {
+  cur_sleep = ticks()
+  while ticks() < (cur_sleep + s * 1000) {
+    yield
+  }
+}

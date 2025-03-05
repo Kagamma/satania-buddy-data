@@ -1,6 +1,7 @@
 // The Interjection Copypasta
 
 using 'libs/animations.evil'
+using 'libs/common/timers.evil'
 
 anim_idle()
 

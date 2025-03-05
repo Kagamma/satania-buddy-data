@@ -1,3 +1,5 @@
+using 'libs/common/timers.evil'
+
 if is_sow() {
   sprite_load('sit/skeleton.x3dv')
 } else {
